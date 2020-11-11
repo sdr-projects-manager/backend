@@ -105,4 +105,6 @@ fabric.properties
 # https://plugins.jetbrains.com/plugin/12206-codestream
 .idea/codestream.xml
 
+src/main/resources/application.properties
+
 # End of https://www.toptal.com/developers/gitignore/api/jetbrains
