@@ -20,6 +20,10 @@ public class User {
     private Integer id;
 
     @Column(nullable = false)
+    @NotNull(message = "Please provide a login")
+    private String login;
+
+    @Column(nullable = false)
     @NotNull(message = "Please provide a password")
     private String password;
 
