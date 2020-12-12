@@ -28,14 +28,17 @@ public class UsersController {
         return ResponseEntity.ok(searchResult);
     }
 
-    @PostMapping()
+    @RequestMapping(value="/add", method=RequestMethod.POST, consumes = "application/json")
     public @ResponseBody Object add(@Valid @RequestBody User newUser) {
-       User user = new User();
-       user.setName(newUser.getName());
-       user.setEmail(newUser.getEmail());
-       user.setLastName(newUser.getLastName());
-       user.setPassword(newUser.getPassword());
-       userRepository.save(user);
-       return user;
+        System.out.println("Create");
+        User user = new User();
+        user.setLogin(newUser.getLogin());
+        user.setName(newUser.getName());
+        user.setEmail(newUser.getEmail());
+        user.setLastName(newUser.getLastName());
+//       user.setPassword(BCryptPasswordEncoder.encode(newUser.getPassword()));
+        user.setPassword(newUser.getPassword());
+        userRepository.save(user);
+        return ResponseEntity.ok(user);
     }
 }
