@@ -1,10 +1,13 @@
 package sdrprojectsmanager.sdr.users;
 
+import org.h2.util.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.*;
 import java.util.Optional;
+
 
 @RestController
 @ControllerAdvice()
@@ -15,9 +18,14 @@ public class UsersController {
     @Autowired
     private UsersRepository userRepository;
 
-    @GetMapping(value = "/")
-    public @ResponseBody Optional<User> getById(@RequestParam Integer id) {
-        return userRepository.findById(id);
+    @RequestMapping(value = "/find/{id}",  method=RequestMethod.GET, consumes = "application/json")
+    public ResponseEntity<?> getById(@PathVariable Integer id) {
+        Optional<User> searchResult = userRepository.findById(id);
+        if (searchResult.isEmpty()) {
+            return ResponseEntity.ok("Ni ma");
+            //TODO ResponseExceptionController
+        }
+        return ResponseEntity.ok(searchResult);
     }
 
     @PostMapping()
