@@ -18,10 +18,10 @@ public class UsersController {
     @Autowired
     private UsersRepository userRepository;
 
-    @RequestMapping(value = "/find/{id}",  method=RequestMethod.GET, consumes = "application/json")
+    @RequestMapping(value = "/find/{id}",  method=RequestMethod.GET)
     public ResponseEntity<?> getById(@PathVariable Integer id) {
         Optional<User> searchResult = userRepository.findById(id);
-        if (searchResult.isEmpty()) {
+if (searchResult.isEmpty()) {
             return ResponseEntity.ok("Ni ma");
             //TODO ResponseExceptionController
         }
