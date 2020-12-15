@@ -23,14 +23,12 @@ public class Project {
     private Integer teamId;
 
     @Column(nullable = false)
-    @NotNull(message = "Please provide a budget id")
     private Integer budgetId;
 
     @NotNull(message = "Please provide a name")
     @Column(nullable = false)
     private String name;
 
-    @NotNull(message = "Please provide a lastName")
     @Column(nullable = false)
     private Integer State;
 
