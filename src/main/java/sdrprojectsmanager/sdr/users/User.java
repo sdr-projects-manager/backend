@@ -4,9 +4,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import sdrprojectsmanager.sdr.roles.Role;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -38,4 +40,13 @@ public class User {
     @NotNull(message = "Please provide a email")
     @Column(unique = true, nullable = false)
     private String email;
+
+    @Column(nullable = true)
+    private Date modificationDate;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "role_id", referencedColumnName = "id")
+    private Role role;
+
+
 }
