@@ -4,9 +4,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.springframework.http.ResponseEntity;
-import sdrprojectsmanager.sdr.teams.Team;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -23,9 +20,10 @@ public class Budget {
     private Integer id;
 
     @Column(nullable = false)
-    @NotNull(message = "Please provide a limit")
-    private BigDecimal limit;
+    @NotNull(message = "Please provide a limitation")
+    private BigDecimal limitation;
 
-    @Column(nullable = false, columnDefinition = "default 0")
-    private BigDecimal  cost;
+    @Column(nullable = false)
+    @NotNull(message = "Please provide a cost")
+    private BigDecimal cost;
 }
