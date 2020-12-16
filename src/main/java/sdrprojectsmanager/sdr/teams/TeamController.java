@@ -15,7 +15,7 @@ public class TeamController {
     @Autowired
     private TeamsRepository teamsRepository;
 
-    @RequestMapping(value = "/find/{id}", method = RequestMethod.GET, consumes = "application/json")
+    @RequestMapping(value = "/find/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getById(@PathVariable Integer id) {
         Optional<Team> searchResult = teamsRepository.findById(id);
         if (searchResult.isEmpty()) {
@@ -25,7 +25,7 @@ public class TeamController {
         return ResponseEntity.ok(searchResult);
     }
 
-    @RequestMapping(value = "/all", method = RequestMethod.GET, consumes = "application/json")
+    @RequestMapping(value = "/all", method = RequestMethod.GET)
     public ResponseEntity<?> getAll() {
         Iterable<Team> searchResult = teamsRepository.findAll();
         if (searchResult.equals(null)) {
@@ -35,7 +35,7 @@ public class TeamController {
         return ResponseEntity.ok(searchResult);
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST, consumes = "application/json")
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
     public @ResponseBody Object add(@Valid @RequestBody Team newTeam) {
         System.out.println("Create");
         Team team = new Team();
@@ -45,7 +45,7 @@ public class TeamController {
         return ResponseEntity.ok(team);
     }
 
-    @RequestMapping(value = "/setMaxUsers/{teamId}", method = RequestMethod.POST, consumes = "application/json")
+    @RequestMapping(value = "/setMaxUsers/{teamId}", method = RequestMethod.POST)
     public @ResponseBody Object setMaxUsers(@PathVariable Integer teamId, @RequestBody Team editTeam) {
         Team teamEdit = teamsRepository.findById(teamId).orElse(null);
         if (teamEdit == null) {

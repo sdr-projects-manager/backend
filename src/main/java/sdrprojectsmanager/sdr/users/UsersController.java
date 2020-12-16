@@ -29,7 +29,7 @@ public class UsersController {
         return ResponseEntity.ok(searchResult);
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST, consumes = "application/json")
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
     public @ResponseBody Object add(@Valid @RequestBody UserDto newUser) {
         System.out.println("Create");
         User user = new User();

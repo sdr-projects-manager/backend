@@ -15,7 +15,7 @@ public class ProjectController {
     @Autowired
     private ProjectsRepository projectsRepository;
 
-    @RequestMapping(value = "/find/{id}", method = RequestMethod.GET, consumes = "application/json")
+    @RequestMapping(value = "/find/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getById(@PathVariable Integer id) {
         Optional<Project> searchResult = projectsRepository.findById(id);
         if (searchResult.isEmpty()) {
@@ -25,7 +25,7 @@ public class ProjectController {
         return ResponseEntity.ok(searchResult);
     }
 
-    @RequestMapping(value = "/all", method = RequestMethod.GET, consumes = "application/json")
+    @RequestMapping(value = "/all", method = RequestMethod.GET)
     public ResponseEntity<?> getAll() {
         Iterable<Project> searchResult = projectsRepository.findAll();
         if (searchResult.equals(null)) {
@@ -35,7 +35,7 @@ public class ProjectController {
         return ResponseEntity.ok(searchResult);
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST, consumes = "application/json")
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
     public @ResponseBody Object add(@Valid @RequestBody Project newProject) {
         System.out.println("Create");
         Project project = new Project();
