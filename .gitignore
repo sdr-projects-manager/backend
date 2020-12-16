@@ -106,5 +106,11 @@ fabric.properties
 .idea/codestream.xml
 
 src/main/resources/application.properties
+target
+.classpath
+.factorypath
+.project
+.vscode
+.settings
 
 # End of https://www.toptal.com/developers/gitignore/api/jetbrains
