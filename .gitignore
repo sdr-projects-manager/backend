@@ -112,5 +112,7 @@ target
 .project
 .vscode
 .settings
+.idea
+*.iml
 
 # End of https://www.toptal.com/developers/gitignore/api/jetbrains
