@@ -3,9 +3,6 @@ package sdrprojectsmanager.sdr.teams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sdrprojectsmanager.sdr.teams.Team;
-import sdrprojectsmanager.sdr.teams.TeamsRepository;
-
 import javax.validation.Valid;
 import java.util.Optional;
 
@@ -18,27 +15,27 @@ public class TeamController {
     @Autowired
     private TeamsRepository teamsRepository;
 
-    @RequestMapping(value = "/find/{id}",  method= RequestMethod.GET, consumes = "application/json")
+    @RequestMapping(value = "/find/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getById(@PathVariable Integer id) {
         Optional<Team> searchResult = teamsRepository.findById(id);
         if (searchResult.isEmpty()) {
             return ResponseEntity.ok("Nie znaleziono");
-            //TODO ResponseExceptionController
+            // TODO ResponseExceptionController
         }
         return ResponseEntity.ok(searchResult);
     }
 
-    @RequestMapping(value = "/all",  method= RequestMethod.GET, consumes = "application/json")
+    @RequestMapping(value = "/all", method = RequestMethod.GET)
     public ResponseEntity<?> getAll() {
         Iterable<Team> searchResult = teamsRepository.findAll();
         if (searchResult.equals(null)) {
             return ResponseEntity.ok("Nie znaleziono");
-            //TODO ResponseExceptionController
+            // TODO ResponseExceptionController
         }
         return ResponseEntity.ok(searchResult);
     }
 
-    @RequestMapping(value="/add", method=RequestMethod.POST, consumes = "application/json")
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
     public @ResponseBody Object add(@Valid @RequestBody Team newTeam) {
         System.out.println("Create");
         Team team = new Team();
@@ -48,12 +45,12 @@ public class TeamController {
         return ResponseEntity.ok(team);
     }
 
-    @RequestMapping(value="/setMaxUsers/{teamId}", method=RequestMethod.POST, consumes = "application/json")
+    @RequestMapping(value = "/setMaxUsers/{teamId}", method = RequestMethod.POST)
     public @ResponseBody Object setMaxUsers(@PathVariable Integer teamId, @RequestBody Team editTeam) {
         Team teamEdit = teamsRepository.findById(teamId).orElse(null);
         if (teamEdit == null) {
             return ResponseEntity.ok("Nie znaleziono");
-            //TODO ResponseExceptionController
+            // TODO ResponseExceptionController
         }
         System.out.println(teamId);
         System.out.println(editTeam.getMaxPeople());

@@ -1,15 +1,12 @@
 package sdrprojectsmanager.sdr.users;
 
-import org.h2.util.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sdrprojectsmanager.sdr.roles.RolesRepository;
 import sdrprojectsmanager.sdr.users.dtos.UserDto;
-
 import javax.validation.*;
 import java.util.Optional;
-
 
 @RestController
 @ControllerAdvice()
@@ -22,17 +19,17 @@ public class UsersController {
     @Autowired
     private RolesRepository rolesRepository;
 
-    @RequestMapping(value = "/find/{id}",  method=RequestMethod.GET)
+    @RequestMapping(value = "/find/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getById(@PathVariable Integer id) {
         Optional<User> searchResult = userRepository.findById(id);
-if (searchResult.isEmpty()) {
+        if (searchResult.isEmpty()) {
             return ResponseEntity.ok("Ni ma");
-            //TODO ResponseExceptionController
+            // TODO ResponseExceptionController
         }
         return ResponseEntity.ok(searchResult);
     }
 
-    @RequestMapping(value="/add", method=RequestMethod.POST, consumes = "application/json")
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
     public @ResponseBody Object add(@Valid @RequestBody UserDto newUser) {
         System.out.println("Create");
         User user = new User();
@@ -41,10 +38,10 @@ if (searchResult.isEmpty()) {
         user.setEmail(newUser.getEmail());
         user.setLastName(newUser.getLastName());
         var role = rolesRepository.findById(newUser.getRole_id());
-        if(role != null){
+        if (role != null) {
             user.setRole(role.get());
         }
-//       user.setPassword(BCryptPasswordEncoder.encode(newUser.getPassword()));
+        // user.setPassword(BCryptPasswordEncoder.encode(newUser.getPassword()));
         user.setPassword(newUser.getPassword());
         userRepository.save(user);
         return ResponseEntity.ok(user);
