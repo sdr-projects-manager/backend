@@ -15,16 +15,17 @@ import java.math.BigDecimal;
 @Accessors(chain = true)
 @Entity(name = "tasks")
 public class Task {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     @Column(nullable = false)
-    @NotNull(message = "Please provide a role id")
+    @NotNull(message = "Please provide a project id")
     private Integer projectId;
 
     @Column(nullable = false)
-    @NotNull(message = "Please provide a role id")
+    @NotNull(message = "Please provide a user id")
     private Integer userId;
 
     @Column(nullable = false)
@@ -32,15 +33,14 @@ public class Task {
     private String name;
 
     @Column(nullable = false)
-    @NotNull(message = "Please provide a name")
+    @NotNull(message = "Please provide a description")
     private String description;
 
     @Column(nullable = false)
-    @NotNull(message = "Please provide a name")
+    @NotNull(message = "Please provide a state")
     private Integer state;
 
     @Column(nullable = false)
-    @NotNull(message = "Please provide a name")
+    @NotNull(message = "Please provide a cost")
     private BigDecimal cost;
-
 }
