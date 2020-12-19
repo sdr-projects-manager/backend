@@ -24,7 +24,7 @@ public class BudgetController {
         return budget.getId();
     }
 
-    @RequestMapping(value = "/find/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getById(@PathVariable Integer id) {
         Optional<Budget> searchResult = budgetsRepository.findById(id);
         if (searchResult.isEmpty()) {

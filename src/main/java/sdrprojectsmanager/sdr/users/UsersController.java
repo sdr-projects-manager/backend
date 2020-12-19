@@ -19,7 +19,7 @@ public class UsersController {
     @Autowired
     private RolesRepository rolesRepository;
 
-    @RequestMapping(value = "/find/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getById(@PathVariable Integer id) {
         Optional<User> searchResult = userRepository.findById(id);
         if (searchResult.isEmpty()) {
@@ -29,7 +29,7 @@ public class UsersController {
         return ResponseEntity.ok(searchResult);
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST)
     public @ResponseBody Object add(@Valid @RequestBody UserDto newUser) {
         System.out.println("Create");
         User user = new User();

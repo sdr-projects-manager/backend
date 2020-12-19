@@ -15,7 +15,7 @@ public class TeamController {
     @Autowired
     private TeamsRepository teamsRepository;
 
-    @RequestMapping(value = "/find/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getById(@PathVariable Integer id) {
         Optional<Team> searchResult = teamsRepository.findById(id);
         if (searchResult.isEmpty()) {
@@ -25,7 +25,7 @@ public class TeamController {
         return ResponseEntity.ok(searchResult);
     }
 
-    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<?> getAll() {
         Iterable<Team> searchResult = teamsRepository.findAll();
         if (searchResult.equals(null)) {
@@ -35,7 +35,7 @@ public class TeamController {
         return ResponseEntity.ok(searchResult);
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST)
     public @ResponseBody Object add(@Valid @RequestBody Team newTeam) {
         System.out.println("Create");
         Team team = new Team();
