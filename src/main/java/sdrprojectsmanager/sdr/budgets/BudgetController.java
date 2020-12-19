@@ -24,7 +24,7 @@ public class BudgetController {
         return budget.getId();
     }
 
-    @RequestMapping(value = "/find/{id}", method = RequestMethod.GET, consumes = "application/json")
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getById(@PathVariable Integer id) {
         Optional<Budget> searchResult = budgetsRepository.findById(id);
         if (searchResult.isEmpty()) {
@@ -34,7 +34,7 @@ public class BudgetController {
         return ResponseEntity.ok(searchResult);
     }
 
-    @RequestMapping(value = "/changeLimit/{budgetId}", method = RequestMethod.POST, consumes = "application/json")
+    @RequestMapping(value = "/changeLimit/{budgetId}", method = RequestMethod.POST)
     public @ResponseBody Object setMaxUsers(@PathVariable Integer budgetId, @RequestBody Budget editLimit) {
         Budget budgetEdit = budgetsRepository.findById(budgetId).orElse(null);
         if (budgetEdit == null) {
