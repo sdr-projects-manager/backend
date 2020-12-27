@@ -44,4 +44,5 @@ public class TeamSquad {
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
 }
