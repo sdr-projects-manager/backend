@@ -6,7 +6,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -21,9 +20,9 @@ public class Budget {
 
     @Column(nullable = false)
     @NotNull(message = "Please provide a limitation")
-    private BigDecimal limitation;
+    private Double limitation;
 
     @Column(nullable = false)
     @NotNull(message = "Please provide a cost")
-    private BigDecimal cost;
+    private Double cost;
 }

@@ -3,9 +3,11 @@ package sdrprojectsmanager.sdr.budgets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
+
 import javax.validation.Valid;
-import java.math.BigDecimal;
 import java.util.Optional;
+
 
 @RestController
 @ControllerAdvice()
@@ -16,12 +18,18 @@ public class BudgetController {
     @Autowired
     private BudgetsRepository budgetsRepository;
 
-    public Integer createNewBudget(BigDecimal newLimit) {
-        Budget budget = new Budget();
-        budget.setLimitation(newLimit);
-        budgetsRepository.save(budget);
+    public Budget createNewBudget(Double newLimit) {
 
-        return budget.getId();
+        Budget budget = new Budget();
+        try {
+            budget.setLimitation(newLimit);
+            budget.setCost(0.00);
+            budgetsRepository.save(budget);
+        }
+        catch(Exception e){
+            throw new ResourceNotFoundException("Create team fails");
+        }
+        return budget;
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
@@ -29,7 +37,7 @@ public class BudgetController {
         Optional<Budget> searchResult = budgetsRepository.findById(id);
         if (searchResult.isEmpty()) {
             return ResponseEntity.ok("Nie znaleziono");
-            // TODO ResponseExceptionController
+            //TODO ResponseExceptionController
         }
         return ResponseEntity.ok(searchResult);
     }
@@ -39,7 +47,7 @@ public class BudgetController {
         Budget budgetEdit = budgetsRepository.findById(budgetId).orElse(null);
         if (budgetEdit == null) {
             return ResponseEntity.ok("Nie znaleziono");
-            // TODO ResponseExceptionController
+            //TODO ResponseExceptionController
         }
         System.out.println(editLimit);
         System.out.println(editLimit.getLimitation());
