@@ -11,7 +11,6 @@ import sdrprojectsmanager.sdr.teams.Team;
 import sdrprojectsmanager.sdr.teams.TeamsRepository;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 @RestController
 @ControllerAdvice()
@@ -20,29 +19,23 @@ import java.util.Optional;
 public class ProjectController {
 
     @Autowired
-    private ProjectsRepository projectsRepository;
-    @Autowired
     private BudgetsRepository budgetsRepository;
     @Autowired
     private TeamsRepository teamsRepository;
+    @Autowired
+    private ProjectsRepository projectsRepository;
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getById(@PathVariable Integer id) {
-        Optional<Project> searchResult = projectsRepository.findById(id);
-        if (searchResult.isEmpty()) {
-            return ResponseEntity.ok("Nie znaleziono");
-            // TODO ResponseExceptionController
-        }
+        Project searchResult = projectsRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));
         return ResponseEntity.ok(searchResult);
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<?> getAll() {
         Iterable<Project> searchResult = projectsRepository.findAll();
-        if (searchResult.equals(null)) {
-            return ResponseEntity.ok("Nie znaleziono");
-            // TODO ResponseExceptionController
-        }
+        if(searchResult.equals(null)) throw new ResourceNotFoundException("Project not found");
         return ResponseEntity.ok(searchResult);
     }
 
@@ -50,20 +43,15 @@ public class ProjectController {
     public @ResponseBody Object add(@Valid @RequestBody AddProject newProject){
 
         Budget newBudget = new Budget();
-        try{
-            newBudget.setLimitation(newProject.getLimitation());
-            newBudget.setCost(0.00);
-            budgetsRepository.save(newBudget);
-        }
-        catch(DataAccessException e){
-            throw new ResourceNotFoundException(e.getCause().getMessage());
-        }
         Team searchResult = teamsRepository.findById(newProject.getTeamId())
                 .orElseThrow(() -> new ResourceNotFoundException("Team not found with id: " + newProject.getTeamId()));
         Project project = new Project();
         try{
+            newBudget.setLimitation(newProject.getLimitation());
+            newBudget.setCost(0.00);
+            budgetsRepository.save(newBudget);
             project.setName(newProject.getName());
-            project.setTeamId(newProject.getTeamId());
+            project.setTeamId(searchResult.getId());
             project.setBudget(newBudget);
             project.setState(0);
             projectsRepository.save(project);
