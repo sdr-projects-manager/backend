@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import sdrprojectsmanager.sdr.budgets.Budget;
 
 @Getter
 @Setter
@@ -18,12 +19,13 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     @NotNull(message = "Please provide a team id")
     private Integer teamId;
 
-    @Column(nullable = false)
-    private Integer budgetId;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "budget", referencedColumnName = "id")
+    private Budget budget;
 
     @NotNull(message = "Please provide a name")
     @Column(nullable = false)
