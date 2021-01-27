@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 @RestController
 @ControllerAdvice()
@@ -28,7 +27,8 @@ public class TeamController {
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<?> getAll() {
         Iterable<Team> allTeams = teamsRepository.findAll();
-        if(allTeams.equals(null)) throw new ResourceNotFoundException("Teams not found");
+        if (allTeams.equals(null))
+            throw new ResourceNotFoundException("Teams not found");
         return ResponseEntity.ok(allTeams);
     }
 
@@ -39,9 +39,8 @@ public class TeamController {
             team.setName(newTeam.getName());
             team.setMaxPeople(newTeam.getMaxPeople());
             teamsRepository.save(team);
-        }
-        catch(Exception e){
-                throw new ResourceNotFoundException("Create team fails");
+        } catch (Exception e) {
+            throw new ResourceNotFoundException("Create team fails");
         }
         return ResponseEntity.ok(team);
     }
@@ -50,12 +49,11 @@ public class TeamController {
     public @ResponseBody Object edit(@PathVariable Integer teamId, @RequestBody Team editTeam) {
         Team teamEdit = teamsRepository.findById(teamId)
                 .orElseThrow(() -> new ResourceNotFoundException("Team not found with id: " + teamId));
-        try{
+        try {
             teamEdit.setName(editTeam.getName());
             teamEdit.setMaxPeople(editTeam.getMaxPeople());
             teamsRepository.save(teamEdit);
-        }
-        catch(DataAccessException e){
+        } catch (DataAccessException e) {
             throw new ResourceNotFoundException(e.getCause().getMessage());
         }
         return ResponseEntity.ok(teamEdit);
