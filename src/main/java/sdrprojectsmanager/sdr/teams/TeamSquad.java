@@ -4,9 +4,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import sdrprojectsmanager.sdr.roles.Role;
+import sdrprojectsmanager.sdr.users.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -19,11 +24,25 @@ public class TeamSquad {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @Column(nullable = false)
-    @NotNull(message = "Please provide a role id")
-    private Integer roleId;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "teams", referencedColumnName = "id")
+    @NotNull(message = "Please provide a teamid")
+    private Team teamId;
 
-    @Column(nullable = false)
-    @NotNull(message = "Please provide a user id")
-    private Integer userId;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "role_id", referencedColumnName = "id")
+    @NotNull(message = "Please provide a roleid")
+    private Role roleId;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "users", referencedColumnName = "id")
+    @NotNull(message = "Please provide a userid")
+    private User userId;
+
+    @Column(updatable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
 }

@@ -1,12 +1,13 @@
 package sdrprojectsmanager.sdr.users;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
 import sdrprojectsmanager.sdr.roles.RolesRepository;
 import sdrprojectsmanager.sdr.users.dtos.UserDto;
 import javax.validation.*;
-import java.util.Optional;
 
 @RestController
 @ControllerAdvice()
@@ -21,29 +22,59 @@ public class UsersController {
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getById(@PathVariable Integer id) {
-        Optional<User> searchResult = userRepository.findById(id);
-        if (searchResult.isEmpty()) {
-            return ResponseEntity.ok("Ni ma");
-            // TODO ResponseExceptionController
-        }
+        User searchResult = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
         return ResponseEntity.ok(searchResult);
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    public @ResponseBody Object getAll() {
+        Iterable <User> allUsers = userRepository.findAll();
+        if(allUsers.equals(null)) throw new ResourceNotFoundException("Users not found");
+        return ResponseEntity.ok(allUsers);
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public @ResponseBody Object add(@Valid @RequestBody UserDto newUser) {
-        System.out.println("Create");
         User user = new User();
-        user.setLogin(newUser.getLogin());
-        user.setName(newUser.getName());
-        user.setEmail(newUser.getEmail());
-        user.setLastName(newUser.getLastName());
-        var role = rolesRepository.findById(newUser.getRole_id());
-        if (role != null) {
-            user.setRole(role.get());
+        try{
+            user.setLogin(newUser.getLogin());
+            user.setName(newUser.getName());
+            user.setEmail(newUser.getEmail());
+            user.setLastName(newUser.getLastName());
+            var role = rolesRepository.findById(newUser.getRole_id());
+            if (role != null) {
+                user.setRole(role.get());
+            }
+            // user.setPassword(BCryptPasswordEncoder.encode(newUser.getPassword()));
+            user.setPassword(newUser.getPassword());
+            userRepository.save(user);
         }
-        // user.setPassword(BCryptPasswordEncoder.encode(newUser.getPassword()));
-        user.setPassword(newUser.getPassword());
-        userRepository.save(user);
+        catch(Exception e){
+            throw new ResourceNotFoundException("Users not found");
+        }
+
         return ResponseEntity.ok(user);
+    }
+
+    @RequestMapping(value = "/edit/{id}", method = RequestMethod.POST)
+    public @ResponseBody Object edit(@Valid @RequestBody UserDto newEdit, @PathVariable Integer id) {
+        User edit = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+        try{
+            edit.setLogin(newEdit.getLogin());
+            edit.setName(newEdit.getName());
+            edit.setEmail(newEdit.getEmail());
+            edit.setLastName(newEdit.getLastName());
+            var role = rolesRepository.findById(newEdit.getRole_id());
+            if (role != null) edit.setRole(role.get());
+            // user.setPassword(BCryptPasswordEncoder.encode(newUser.getPassword()));
+            edit.setPassword(newEdit.getPassword());
+            userRepository.save(edit);
+        }
+        catch(DataAccessException e){
+            throw new ResourceNotFoundException(e.getCause().getMessage());
+        }
+        return ResponseEntity.ok(edit);
     }
 }

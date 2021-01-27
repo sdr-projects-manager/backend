@@ -4,9 +4,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import sdrprojectsmanager.sdr.users.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -18,12 +22,24 @@ public class TeamTask {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "teams", referencedColumnName = "id")
+    @NotNull(message = "Please provide a teamid")
+    private Team teamid;
 
-    @Column(nullable = false)
-    @NotNull(message = "Please provide a role id")
-    private Integer roleId;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "users", referencedColumnName = "id")
+    @NotNull(message = "Please provide a userid")
+    private User userId;
 
     @Column(nullable = false)
     @NotNull(message = "Please provide a task id")
     private Integer taskId;
+
+
+    @Column(updatable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 }
