@@ -1,12 +1,11 @@
-package sdrprojectsmanager.sdr.payloads;
+package sdrprojectsmanager.sdr.payloads.requests;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Data
 @AllArgsConstructor
@@ -14,7 +13,9 @@ import javax.validation.constraints.NotEmpty;
 @Builder
 public class LoginRequest {
 
+    @NotNull(message = "Please provide a login")
     private String login;
 
+    @NotNull(message = "Please provide a password")
     private String password;
 }
