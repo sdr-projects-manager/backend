@@ -9,13 +9,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
-public class SdrSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+public class SecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private SdrUserDetailsService userDetailsService;
@@ -47,10 +48,13 @@ public class SdrSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                .antMatchers("/api/teams/**").permitAll()
                 .antMatchers("/api/auth/signin").permitAll()
-                .antMatchers("/api/teams/setMaxUsers").hasAuthority("ROLE_ADMIN")
+                .antMatchers("/api/budgets/changeLimit/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_PM")
+                .antMatchers("/api/budgets/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_PM")
+                .antMatchers("/api/projects/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_PM")
+                .antMatchers("/api/teams/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_PM")
                 .anyRequest().authenticated();
+        // TODO auth all routes
 
         http.addFilterAfter(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }

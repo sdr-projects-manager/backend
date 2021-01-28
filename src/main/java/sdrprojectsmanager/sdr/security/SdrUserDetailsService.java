@@ -29,22 +29,35 @@ public class SdrUserDetailsService  implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) {
         User user;
-        user = userRepository.findByLoginIgnoreCaseOrEmailIgnoreCase(username, username);
+        user = userRepository.findByLoginIgnoreCase(username);
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }
         Collection<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-        List<Role> userRoles =  rolesRepository.findByUserId(user.getId());
+        var role = user.getRole();
+        System.out.println(role.getId());
         // TODO build authorities by roles
-        authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        authorities.add(new SimpleGrantedAuthority("ROLE_MANAGER"));
-        authorities.add(new SimpleGrantedAuthority("ROLE_SKWARK"));
+
+        if(role.getId() == 1){
+            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+            authorities.add(new SimpleGrantedAuthority("ROLE_PM"));
+            authorities.add(new SimpleGrantedAuthority("ROLE_TL"));
+        }
+        if(role.getId() == 2) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_PM"));
+            authorities.add(new SimpleGrantedAuthority("ROLE_TL"));
+        }
+        if(role.getId() == 3) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_TL"));
+        }
+
+        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        System.out.println(authorities);
         return UserPrincipal.builder()
                 .id(user.getId())
                 .username(user.getLogin())
                 .email(user.getEmail())
-                .password(user.getPasswordHash())
+                .password(user.getPassword())
                 .authorities(authorities)
                 .build();
     }
