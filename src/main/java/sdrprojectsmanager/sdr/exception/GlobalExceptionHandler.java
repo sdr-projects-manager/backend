@@ -52,13 +52,13 @@ public class GlobalExceptionHandler {
     }
 
     // Handle global exceptions
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleGlobalException(Exception exception, HttpHeaders headers, HttpStatus status,
-            WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), "Internal server error", request.getDescription(false),
-                status.value());
-        return new ResponseEntity(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<?> handleGlobalException(Exception exception, HttpHeaders headers, HttpStatus status,
+//            WebRequest request) {
+//        ErrorDetails errorDetails = new ErrorDetails(new Date(), "Internal server error", request.getDescription(false),
+//                status.value());
+//        return new ResponseEntity(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 
     // Handle HttpMediaTypeNotSupportedException
 
