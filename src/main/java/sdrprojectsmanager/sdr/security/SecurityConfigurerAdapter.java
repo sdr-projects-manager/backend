@@ -60,6 +60,7 @@ public class SecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/teams/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_PM", "ROLE_TL")
                 .antMatchers("/api/users/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_PM")
                 .antMatchers("/api/users/edit/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_PM", "ROLE_TL", "ROLE_USER")
+                .antMatchers("/api/raports/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_PM", "ROLE_TL")
                 .anyRequest().authenticated();
 
         http.addFilterAfter(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
