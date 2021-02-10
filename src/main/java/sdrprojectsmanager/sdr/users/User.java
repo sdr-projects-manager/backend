@@ -1,5 +1,6 @@
 package sdrprojectsmanager.sdr.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,7 +11,6 @@ import sdrprojectsmanager.sdr.roles.Role;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -27,6 +27,7 @@ public class User {
     @NotNull(message = "Please provide a login")
     private String login;
 
+    @JsonIgnore
     @Column(nullable = false)
     @NotNull(message = "Please provide a password")
     private String password;

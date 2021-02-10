@@ -1,5 +1,6 @@
 package sdrprojectsmanager.sdr.users.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +15,7 @@ public class UserDto {
     @NotNull(message = "Please provide a login")
     public String login;
 
+    @JsonIgnore
     @Column(nullable = false)
     @NotNull(message = "Please provide a password")
     public String password;
