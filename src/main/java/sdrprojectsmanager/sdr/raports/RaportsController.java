@@ -14,7 +14,6 @@ import javax.validation.Valid;
 @RequestMapping("api/raports")
 public class RaportsController {
 
-
     @Autowired
     private RaportRepository raportRepository;
 
@@ -26,10 +25,20 @@ public class RaportsController {
         return ResponseEntity.ok(searchResult);
     }
 
+    @RequestMapping(value = "project/{id}", method = RequestMethod.GET)
+    public ResponseEntity<?> getByProjectId(@PathVariable Integer projectid) {
+        Raport raport;
+        raport = raportRepository.findByProjectId(projectid);
+        if (raport == null) {
+            throw new ResourceNotFoundException("Raport not found with project id: " + projectid);
+        }
+        return ResponseEntity.ok(raport);
+    }
+
     @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody Object getAll() {
-        Iterable <Raport> allUsers = raportRepository.findAll();
-        if(allUsers.equals(null)) throw new ResourceNotFoundException("Raports not found");
-        return ResponseEntity.ok(allUsers);
+        Iterable <Raport> raport = raportRepository.findAll();
+        if(raport.equals(null)) throw new ResourceNotFoundException("Raports not found");
+        return ResponseEntity.ok(raport);
     }
 }

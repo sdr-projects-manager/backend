@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 @Entity(name = "raports")
 public class Raport {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
