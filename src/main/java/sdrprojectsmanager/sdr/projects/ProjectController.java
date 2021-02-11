@@ -16,6 +16,7 @@ import javax.validation.Valid;
 @ControllerAdvice()
 @Valid
 @RequestMapping("api/projects")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ProjectController {
 
     @Autowired
@@ -35,18 +36,19 @@ public class ProjectController {
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<?> getAll() {
         Iterable<Project> searchResult = projectsRepository.findAll();
-        if(searchResult.equals(null)) throw new ResourceNotFoundException("Project not found");
+        if (searchResult.equals(null))
+            throw new ResourceNotFoundException("Project not found");
         return ResponseEntity.ok(searchResult);
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public @ResponseBody Object add(@Valid @RequestBody AddProject newProject){
+    public @ResponseBody Object add(@Valid @RequestBody AddProject newProject) {
 
         Budget newBudget = new Budget();
         Team searchResult = teamsRepository.findById(newProject.getTeamId())
                 .orElseThrow(() -> new ResourceNotFoundException("Team not found with id: " + newProject.getTeamId()));
         Project project = new Project();
-        try{
+        try {
             newBudget.setLimitation(newProject.getLimitation());
             newBudget.setCost(0.00);
             budgetsRepository.save(newBudget);
@@ -55,8 +57,7 @@ public class ProjectController {
             project.setBudget(newBudget);
             project.setState(0);
             projectsRepository.save(project);
-        }
-        catch(DataAccessException e){
+        } catch (DataAccessException e) {
             throw new ResourceNotFoundException(e.getCause().getMessage());
         }
         return ResponseEntity.ok(project);

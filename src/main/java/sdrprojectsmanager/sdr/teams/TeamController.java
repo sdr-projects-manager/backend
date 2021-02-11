@@ -11,6 +11,7 @@ import javax.validation.Valid;
 @RestController
 @ControllerAdvice()
 @Valid
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("api/teams")
 public class TeamController {
 
