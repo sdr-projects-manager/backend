@@ -4,14 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
-import sdrprojectsmanager.sdr.roles.RolesRepository;
-import sdrprojectsmanager.sdr.users.User;
 
 import javax.validation.Valid;
 
 @RestController
 @ControllerAdvice()
 @Valid
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("api/raports")
 public class RaportsController {
 

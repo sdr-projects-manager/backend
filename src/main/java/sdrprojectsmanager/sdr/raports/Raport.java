@@ -26,7 +26,10 @@ public class Raport {
     private Integer projectId;
 
     @Column(nullable = false)
-    private String description;
+    private Integer teamId;
+
+    @Column(nullable = false)
+    private String projectName;
 
     @Column(nullable = false)
     private Double costs;
@@ -34,8 +37,6 @@ public class Raport {
     @Column(nullable = false)
     private Double profitability;
 
-    @Column(nullable = false)
-    private String comments;
 
 }
 
