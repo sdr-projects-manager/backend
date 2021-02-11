@@ -1,11 +1,11 @@
 package sdrprojectsmanager.sdr.users.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
-import lombok.Setter;
-
 import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -31,7 +31,6 @@ public class UserDto {
     @NotNull(message = "Please provide a email")
     @Column(nullable = false)
     public String email;
-
 
     @NotNull(message = "Please provide a role id")
     @Column(nullable = false)

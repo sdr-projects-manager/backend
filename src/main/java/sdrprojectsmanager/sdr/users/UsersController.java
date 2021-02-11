@@ -3,6 +3,7 @@ package sdrprojectsmanager.sdr.users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
 import sdrprojectsmanager.sdr.roles.RolesRepository;
@@ -19,6 +20,8 @@ public class UsersController {
     private UsersRepository userRepository;
     @Autowired
     private RolesRepository rolesRepository;
+    @Autowired
+    PasswordEncoder encoder;
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getById(@PathVariable Integer id) {
@@ -46,12 +49,11 @@ public class UsersController {
             if (role != null) {
                 user.setRole(role.get());
             }
-            // user.setPassword(BCryptPasswordEncoder.encode(newUser.getPassword()));
-            user.setPassword(newUser.getPassword());
+            user.setPassword(encoder.encode(newUser.getPassword()));
             userRepository.save(user);
         }
         catch(Exception e){
-            throw new ResourceNotFoundException("Users not found");
+            throw new ResourceNotFoundException("Role not found");
         }
 
         return ResponseEntity.ok(user);
@@ -68,8 +70,7 @@ public class UsersController {
             edit.setLastName(newEdit.getLastName());
             var role = rolesRepository.findById(newEdit.getRole_id());
             if (role != null) edit.setRole(role.get());
-            // user.setPassword(BCryptPasswordEncoder.encode(newUser.getPassword()));
-            edit.setPassword(newEdit.getPassword());
+            edit.setPassword(encoder.encode(newEdit.getPassword()));
             userRepository.save(edit);
         }
         catch(DataAccessException e){
