@@ -13,6 +13,7 @@ import javax.validation.*;
 @RestController
 @ControllerAdvice()
 @Valid
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("api/users")
 public class UsersController {
 
@@ -32,15 +33,16 @@ public class UsersController {
 
     @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody Object getAll() {
-        Iterable <User> allUsers = userRepository.findAll();
-        if(allUsers.equals(null)) throw new ResourceNotFoundException("Users not found");
+        Iterable<User> allUsers = userRepository.findAll();
+        if (allUsers.equals(null))
+            throw new ResourceNotFoundException("Users not found");
         return ResponseEntity.ok(allUsers);
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public @ResponseBody Object add(@Valid @RequestBody UserDto newUser) {
         User user = new User();
-        try{
+        try {
             user.setLogin(newUser.getLogin());
             user.setName(newUser.getName());
             user.setEmail(newUser.getEmail());
@@ -51,8 +53,7 @@ public class UsersController {
             }
             user.setPassword(encoder.encode(newUser.getPassword()));
             userRepository.save(user);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             throw new ResourceNotFoundException("Role not found");
         }
 
@@ -63,17 +64,17 @@ public class UsersController {
     public @ResponseBody Object edit(@Valid @RequestBody UserDto newEdit, @PathVariable Integer id) {
         User edit = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
-        try{
+        try {
             edit.setLogin(newEdit.getLogin());
             edit.setName(newEdit.getName());
             edit.setEmail(newEdit.getEmail());
             edit.setLastName(newEdit.getLastName());
             var role = rolesRepository.findById(newEdit.getRole_id());
-            if (role != null) edit.setRole(role.get());
+            if (role != null)
+                edit.setRole(role.get());
             edit.setPassword(encoder.encode(newEdit.getPassword()));
             userRepository.save(edit);
-        }
-        catch(DataAccessException e){
+        } catch (DataAccessException e) {
             throw new ResourceNotFoundException(e.getCause().getMessage());
         }
         return ResponseEntity.ok(edit);

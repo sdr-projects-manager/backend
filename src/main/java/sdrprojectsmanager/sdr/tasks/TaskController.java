@@ -12,19 +12,28 @@ import java.util.List;
 @RestController
 @ControllerAdvice()
 @Valid
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("api/tasks")
 public class TaskController {
 
     @Autowired
     private TaskRepository taskRepository;
 
+    @RequestMapping(method = RequestMethod.GET)
+    public @ResponseBody Object getAll() {
+        Iterable<Task> allTasks = taskRepository.findAll();
+        if (allTasks.equals(null))
+            throw new ResourceNotFoundException("Tasls not found");
+        return ResponseEntity.ok(allTasks);
+    }
 
     @RequestMapping(value = "/taskInProject/{projectId}", method = RequestMethod.GET)
-    public  List<Task> getTaskInProject(@PathVariable Integer projectId) {
+    public List<Task> getTaskInProject(@PathVariable Integer projectId) {
         return taskRepository.findByProjectId(projectId);
     }
+
     @RequestMapping(value = "/userTask/{userId}", method = RequestMethod.GET)
-    public  List<Task> getUserTask(@PathVariable Integer userId) {
+    public List<Task> getUserTask(@PathVariable Integer userId) {
         return taskRepository.findByUserId(userId);
     }
 
@@ -35,26 +44,22 @@ public class TaskController {
         return ResponseEntity.ok(searchResult);
     }
 
-
     @RequestMapping(method = RequestMethod.POST)
-    public @ResponseBody    Object add(@Valid @RequestBody AddTask newTask){
+    public @ResponseBody Object add(@Valid @RequestBody AddTask newTask) {
         Task task = new Task();
-        try{
+        try {
             task.setName(newTask.getName());
             task.setDescription(newTask.getDescription());
             task.setCost(newTask.getCost());
             task.setState(0);
             task.setProjectId(newTask.getProjectId());
             task.setUserId(newTask.getUserId());
-        }
-        catch(DataAccessException e){
+        } catch (DataAccessException e) {
             throw new ResourceNotFoundException(e.getCause().getMessage());
         }
         taskRepository.save(task);
         return ResponseEntity.ok(task);
     }
-
-
 
     @RequestMapping(value = "/endTask/{id}", method = RequestMethod.POST)
     public ResponseEntity<?> endTask(@PathVariable Integer id) {
@@ -76,6 +81,4 @@ public class TaskController {
         taskRepository.save(searchResult);
         return ResponseEntity.ok(searchResult);
     }
-
-
 }
