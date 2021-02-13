@@ -12,6 +12,7 @@ public class ErrorDetails {
     private String message;
     private String details;
     private Integer status;
+    private Map detailsError;
 
     public ErrorDetails(Date timestamp, String message, String details, Integer status) {
         super();
@@ -19,5 +20,13 @@ public class ErrorDetails {
         this.message = message;
         this.details = details;
         this.status = status;
+    }
+    public ErrorDetails(Date timestamp, String message, Map detailsError, Integer status) {
+        super();
+        this.timestamp = timestamp;
+        this.message = message;
+        this.detailsError = detailsError;
+        this.status = status;
+
     }
 }
