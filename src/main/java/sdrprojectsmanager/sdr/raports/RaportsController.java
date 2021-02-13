@@ -25,6 +25,7 @@ public class RaportsController {
         return ResponseEntity.ok(searchResult);
     }
 
+
     @RequestMapping(value = "project/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getByProjectId(@PathVariable Integer projectid) {
         Raport raport;
