@@ -59,4 +59,12 @@ public class TeamController {
         }
         return ResponseEntity.ok(teamEdit);
     }
+
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    public ResponseEntity<?> editTask(@PathVariable Integer id) {
+        teamsRepository.deleteById(id);
+
+        return ResponseEntity.ok("Element został usunięty");
+    }
+
 }
