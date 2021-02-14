@@ -6,13 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
 import sdrprojectsmanager.sdr.utils.ApiResponses.ApiResponse;
-
 import javax.validation.Valid;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 @RestController
 @ControllerAdvice()
@@ -75,15 +70,25 @@ public class TaskController {
         return ResponseEntity.ok(searchResult);
     }
 
-    @RequestMapping(value = "/edit/{id}", method = RequestMethod.POST)
-    public ResponseEntity<?> editTask(@PathVariable Integer id, @RequestBody AddTask editTask) {
+    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
+    public ResponseEntity<?> edit(@PathVariable Integer id, @RequestBody AddTask editTask) {
         Task searchResult = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
-        searchResult.setName(editTask.getName());
-        searchResult.setDescription(editTask.getName());
-        searchResult.setCost(editTask.getCost());
-        searchResult.setUserId(editTask.getUserId());
+
+        if (!editTask.getName().isEmpty()) {
+            searchResult.setName(editTask.getName());
+        }
+
+        if (!editTask.getDescription().isEmpty()) {
+            searchResult.setDescription(editTask.getDescription());
+        }
+
+        if (editTask.getCost() > 0) {
+            searchResult.setCost(editTask.getCost());
+        }
+
         taskRepository.save(searchResult);
+
         return ResponseEntity.ok(searchResult);
     }
 
