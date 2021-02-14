@@ -84,10 +84,11 @@ public class TaskController {
         return ResponseEntity.ok(searchResult);
     }
 
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public ResponseEntity<?> editTask(@PathVariable Integer id) {
+        taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found"));
         taskRepository.deleteById(id);
 
-        return ResponseEntity.ok("Element został usunięty");
+        return ResponseEntity.ok("Task has been deleted");
     }
 }
