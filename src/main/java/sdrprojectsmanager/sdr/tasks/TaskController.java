@@ -5,9 +5,14 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
+import sdrprojectsmanager.sdr.utils.ApiResponses.ApiResponse;
 
 import javax.validation.Valid;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 @RestController
 @ControllerAdvice()
@@ -83,10 +88,10 @@ public class TaskController {
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> editTask(@PathVariable Integer id) {
-        taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+    public ResponseEntity<?> delete(@PathVariable Integer id) {
+        Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found"));
         taskRepository.deleteById(id);
 
-        return ResponseEntity.ok("Task has been deleted");
+        return ApiResponse.delete(task, "Task has been deleted");
     }
 }

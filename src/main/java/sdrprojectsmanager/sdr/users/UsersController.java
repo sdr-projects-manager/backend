@@ -5,9 +5,12 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
 import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
 import sdrprojectsmanager.sdr.roles.RolesRepository;
 import sdrprojectsmanager.sdr.users.dtos.UserDto;
+import sdrprojectsmanager.sdr.utils.ApiResponses.ApiResponse;
+
 import javax.validation.*;
 
 @RestController
@@ -81,10 +84,10 @@ public class UsersController {
     }
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
-    public ResponseEntity<?> editTask(@PathVariable Integer id) {
-        userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    public ResponseEntity<?> delete(@PathVariable Integer id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         userRepository.deleteById(id);
 
-        return ResponseEntity.ok("User has been deleted");
+        return ApiResponse.delete(user, "User has been deleted");
     }
 }
