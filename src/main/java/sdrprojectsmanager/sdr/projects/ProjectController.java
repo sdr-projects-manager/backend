@@ -9,6 +9,7 @@ import sdrprojectsmanager.sdr.budgets.BudgetsRepository;
 import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
 import sdrprojectsmanager.sdr.teams.Team;
 import sdrprojectsmanager.sdr.teams.TeamsRepository;
+import sdrprojectsmanager.sdr.utils.ApiResponses.ApiResponse;
 
 import javax.validation.Valid;
 
@@ -64,10 +65,11 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
-    public ResponseEntity<?> editTask(@PathVariable Integer id) {
-        projectsRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Project not found"));
+    public ResponseEntity<?> delete(@PathVariable Integer id) {
+        Project project = projectsRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
         projectsRepository.deleteById(id);
 
-        return ResponseEntity.ok("Project has been deleted");
+        return ApiResponse.delete(project, "Project has been deleted");
     }
 }

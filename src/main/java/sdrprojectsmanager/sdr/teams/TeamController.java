@@ -5,6 +5,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
+import sdrprojectsmanager.sdr.utils.ApiResponses.ApiResponse;
 
 import javax.validation.Valid;
 
@@ -61,11 +62,11 @@ public class TeamController {
     }
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
-    public ResponseEntity<?> editTask(@PathVariable Integer id) {
-        teamsRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Team not found"));
+    public ResponseEntity<?> delete(@PathVariable Integer id) {
+        Team team = teamsRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Team not found"));
         teamsRepository.deleteById(id);
 
-        return ResponseEntity.ok("Team has been deleted");
+        return ApiResponse.delete(team, "Team has been deleted");
     }
 
 }
