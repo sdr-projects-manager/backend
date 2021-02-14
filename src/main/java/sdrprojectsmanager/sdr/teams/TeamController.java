@@ -62,9 +62,10 @@ public class TeamController {
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public ResponseEntity<?> editTask(@PathVariable Integer id) {
+        teamsRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Team not found"));
         teamsRepository.deleteById(id);
 
-        return ResponseEntity.ok("Element został usunięty");
+        return ResponseEntity.ok("Team has been deleted");
     }
 
 }
