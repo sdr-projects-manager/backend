@@ -81,4 +81,12 @@ public class TaskController {
         taskRepository.save(searchResult);
         return ResponseEntity.ok(searchResult);
     }
+
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> editTask(@PathVariable Integer id) {
+        taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+        taskRepository.deleteById(id);
+
+        return ResponseEntity.ok("Task has been deleted");
+    }
 }

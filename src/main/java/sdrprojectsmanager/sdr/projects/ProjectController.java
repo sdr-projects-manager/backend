@@ -62,4 +62,12 @@ public class ProjectController {
         }
         return ResponseEntity.ok(project);
     }
+
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    public ResponseEntity<?> editTask(@PathVariable Integer id) {
+        projectsRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Project not found"));
+        projectsRepository.deleteById(id);
+
+        return ResponseEntity.ok("Project has been deleted");
+    }
 }
