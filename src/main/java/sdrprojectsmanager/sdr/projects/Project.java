@@ -7,7 +7,12 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import sdrprojectsmanager.sdr.budgets.Budget;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -33,5 +38,12 @@ public class Project {
 
     @Column(nullable = false)
     private Integer State;
+
+    @Column(updatable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
 }

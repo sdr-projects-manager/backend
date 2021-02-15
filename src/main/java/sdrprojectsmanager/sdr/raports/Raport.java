@@ -37,6 +37,13 @@ public class Raport {
     @Column(nullable = false)
     private Double profitability;
 
+    @Column(updatable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
 
 }
 
