@@ -84,8 +84,8 @@ public class UsersController {
         return ResponseEntity.ok(edit);
     }
 
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
-    public ResponseEntity<?> delete(@PathVariable Integer id) {
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> editTask(@PathVariable Integer id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         userRepository.deleteById(id);
 

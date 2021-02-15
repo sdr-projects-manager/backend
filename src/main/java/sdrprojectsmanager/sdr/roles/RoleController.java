@@ -14,12 +14,11 @@ import javax.validation.Valid;
 @RequestMapping("api/roles")
 public class RoleController {
 
-
     @Autowired
     private RolesRepository rolesRepository;
 
     @RequestMapping(method = RequestMethod.GET)
-    public @ResponseBody    Object getAll() {
+    public @ResponseBody Object getAll() {
         Iterable<Role> allRoles = rolesRepository.findAll();
         if (allRoles.equals(null))
             throw new ResourceNotFoundException("Roles not found");
