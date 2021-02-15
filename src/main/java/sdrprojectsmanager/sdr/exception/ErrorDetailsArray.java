@@ -14,13 +14,11 @@ public class ErrorDetailsArray {
     private Integer status;
     private List<String> details;
 
-
     public ErrorDetailsArray(Date timestamp, String message, List<String> detailsError, Integer status) {
         super();
         this.timestamp = timestamp;
         this.message = message;
         this.details = detailsError;
         this.status = status;
-
     }
 }
