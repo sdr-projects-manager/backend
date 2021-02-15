@@ -4,12 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import sdrprojectsmanager.sdr.roles.Role;
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -17,7 +12,6 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 @Entity(name = "raports")
 public class Raport {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,7 +31,4 @@ public class Raport {
 
     @Column(nullable = false)
     private Double profitability;
-
-
 }
-
