@@ -3,14 +3,17 @@ package sdrprojectsmanager.sdr;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import sdrprojectsmanager.sdr.exception.ErrorDetails;
+import sdrprojectsmanager.sdr.exception.ErrorDetailsArray;
 import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
 
 import javax.validation.ConstraintViolation;
@@ -44,16 +47,17 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     @Override
     public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
                                                                HttpHeaders headers, HttpStatus status, WebRequest request) {
-        final List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
-        Map <String, Set<String>> errorsMap =  fieldErrors.stream().collect(
-                Collectors.groupingBy(FieldError::getField,
-                        Collectors.mapping(FieldError::getDefaultMessage, Collectors.toSet())
-                )
-        );
-
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), "BAD REQUEST", "Wprowadzono błędne dane", HttpStatus.BAD_REQUEST.value());
+        final List<String> details = new ArrayList<>();
+        for(ObjectError error : exception.getBindingResult().getAllErrors()) {
+            details.add(error.getDefaultMessage());
+        }
+        ErrorDetailsArray errorDetails = new ErrorDetailsArray(new Date(), "BAD REQUEST", details, HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
-
+    @Override
+    public final ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request){
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), "BAD REQUEST", ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(errorDetails,HttpStatus.NOT_ACCEPTABLE);
+    }
 }
