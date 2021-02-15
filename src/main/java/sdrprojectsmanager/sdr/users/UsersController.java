@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
@@ -15,7 +16,7 @@ import javax.validation.*;
 
 @RestController
 @ControllerAdvice()
-@Valid
+@Validated
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("api/users")
 public class UsersController {
@@ -43,7 +44,7 @@ public class UsersController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public @ResponseBody Object add(@Valid @RequestBody UserDto newUser) {
+    public @ResponseBody Object add(@Validated @RequestBody UserDto newUser) {
         User user = new User();
         try {
             user.setLogin(newUser.getLogin());
