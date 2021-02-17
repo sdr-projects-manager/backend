@@ -17,6 +17,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Accessors(chain = true)
 @Entity(name = "projects")
+@NamedStoredProcedureQuery(name = "CreateProject",
+        procedureName = "CreateProject", parameters = {
+        @StoredProcedureParameter(mode = ParameterMode.IN, name = "proj_name", type = String.class),
+        @StoredProcedureParameter(mode = ParameterMode.IN, name = "team_id", type = Integer.class),
+        @StoredProcedureParameter(mode = ParameterMode.IN, name = "budget_limit", type = Double.class)})
+@NamedStoredProcedureQuery(name = "DeleteProject",
+        procedureName = "DeleteProject", parameters = {
+        @StoredProcedureParameter(mode = ParameterMode.IN, name = "input_id", type = Integer.class)})
+
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -36,6 +45,8 @@ public class Project {
 
     @Column(nullable = false)
     private Integer State;
+
+    private Double limitation;
 
     @Column(updatable = false)
     @CreationTimestamp
