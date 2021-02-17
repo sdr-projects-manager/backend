@@ -2,10 +2,19 @@ package sdrprojectsmanager.sdr.tasks;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.query.Procedure;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
 import sdrprojectsmanager.sdr.utils.ApiResponses.ApiResponse;
+
+import javax.management.Query;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureQuery;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -18,6 +27,9 @@ public class TaskController {
 
     @Autowired
     private TaskRepository taskRepository;
+
+    @Autowired
+    private EntityManager em;
 
     @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody Object getAll() {
@@ -44,21 +56,21 @@ public class TaskController {
         return ResponseEntity.ok(searchResult);
     }
 
+    @Procedure(name = "AddTask")
     @RequestMapping(method = RequestMethod.POST)
-    public @ResponseBody Object add(@Valid @RequestBody AddTask newTask) {
-        Task task = new Task();
+    public @ResponseBody Object add(@Valid @RequestBody Task newTask) {
         try {
-            task.setName(newTask.getName());
-            task.setDescription(newTask.getDescription());
-            task.setCost(newTask.getCost());
-            task.setState(0);
-            task.setProjectId(newTask.getProjectId());
-            task.setUserId(newTask.getUserId());
-        } catch (DataAccessException e) {
+            em.createNamedStoredProcedureQuery("AddTask")
+                    .setParameter("task_name", newTask.getName())
+                    .setParameter("task_description", newTask.getDescription())
+                    .setParameter("user_id", newTask.getUserId())
+                    .setParameter("project_id", newTask.getProjectId())
+                    .setParameter("task_cost", newTask.getCost()).execute();
+        }
+        catch(Exception e){
             throw new ResourceNotFoundException(e.getCause().getMessage());
         }
-        taskRepository.save(task);
-        return ResponseEntity.ok(task);
+        return ApiResponse.procedure("Task has been created successfuly");
     }
 
     @RequestMapping(value = "/endTask/{id}", method = RequestMethod.POST)
