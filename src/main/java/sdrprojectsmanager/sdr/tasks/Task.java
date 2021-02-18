@@ -16,6 +16,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Accessors(chain = true)
 @Entity(name = "tasks")
+@NamedStoredProcedureQuery(name = "AddTask",
+        procedureName = "AddTask", parameters = {
+        @StoredProcedureParameter(mode = ParameterMode.IN, name = "task_name", type = String.class),
+        @StoredProcedureParameter(mode = ParameterMode.IN, name = "task_description", type = String.class),
+        @StoredProcedureParameter(mode = ParameterMode.IN, name = "user_id", type = Integer.class),
+        @StoredProcedureParameter(mode = ParameterMode.IN, name = "project_id", type = Integer.class),
+        @StoredProcedureParameter(mode = ParameterMode.IN, name = "task_cost", type = Double.class),})
+
 public class Task {
 
     @Id
@@ -39,7 +47,6 @@ public class Task {
     private String description;
 
     @Column(nullable = false)
-    @NotNull(message = "Please provide a state")
     private Integer state;
 
     @Column(nullable = false)

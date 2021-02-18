@@ -14,6 +14,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Accessors(chain = true)
 @Entity(name = "raports")
+@NamedStoredProcedureQuery(name = "CreateRaport",
+        procedureName = "CreateRaport", parameters = {
+        @StoredProcedureParameter(mode = ParameterMode.IN, name = "project_id", type = Integer.class)})
+
 public class Raport {
 
     @Id

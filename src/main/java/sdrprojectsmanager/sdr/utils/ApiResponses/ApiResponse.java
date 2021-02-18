@@ -14,4 +14,12 @@ public class ApiResponse {
 
     return ResponseEntity.ok(response);
   }
+
+  public static ResponseEntity<?> procedure(String message) {
+    HashMap<String, Object> response = new HashMap<String, Object>();
+
+    response.put("message", message);
+
+    return ResponseEntity.ok(response);
+  }
 }
