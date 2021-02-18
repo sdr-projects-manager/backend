@@ -5,12 +5,14 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
+import sdrprojectsmanager.sdr.utils.ApiResponses.ApiResponse;
 
 import javax.validation.Valid;
 
 @RestController
 @ControllerAdvice()
 @Valid
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("api/teams")
 public class TeamController {
 
@@ -57,5 +59,13 @@ public class TeamController {
             throw new ResourceNotFoundException(e.getCause().getMessage());
         }
         return ResponseEntity.ok(teamEdit);
+    }
+
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> editTask(@PathVariable Integer id) {
+        Team team = teamsRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Team not found"));
+        teamsRepository.deleteById(id);
+
+        return ApiResponse.delete(team, "Team has been deleted");
     }
 }
