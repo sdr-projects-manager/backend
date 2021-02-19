@@ -6,6 +6,9 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import sdrprojectsmanager.sdr.projects.Project;
+import sdrprojectsmanager.sdr.teams.Team;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -14,9 +17,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Accessors(chain = true)
 @Entity(name = "raports")
-@NamedStoredProcedureQuery(name = "CreateRaport",
-        procedureName = "CreateRaport", parameters = {
-        @StoredProcedureParameter(mode = ParameterMode.IN, name = "project_id", type = Integer.class)})
+@NamedStoredProcedureQuery(name = "CreateRaport", procedureName = "CreateRaport", parameters = {
+        @StoredProcedureParameter(mode = ParameterMode.IN, name = "project_id", type = Integer.class) })
 
 public class Raport {
 
@@ -24,11 +26,13 @@ public class Raport {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @Column(nullable = false, unique = true)
-    private Integer projectId;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "project_id", referencedColumnName = "id")
+    private Project project;
 
-    @Column(nullable = false)
-    private Integer teamId;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "team_id", referencedColumnName = "id")
+    private Team team;
 
     @Column(nullable = false)
     private String projectName;
