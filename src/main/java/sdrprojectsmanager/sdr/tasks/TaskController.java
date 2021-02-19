@@ -3,8 +3,11 @@ package sdrprojectsmanager.sdr.tasks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
+import sdrprojectsmanager.sdr.security.UserPrincipal;
+import sdrprojectsmanager.sdr.utils.PrincipalRole;
 import sdrprojectsmanager.sdr.utils.ApiResponses.ApiResponse;
 import javax.validation.Valid;
 import java.util.List;
@@ -20,11 +23,21 @@ public class TaskController {
     private TaskRepository taskRepository;
 
     @RequestMapping(method = RequestMethod.GET)
-    public @ResponseBody Object getAll() {
-        Iterable<Task> allTasks = taskRepository.findAll();
-        if (allTasks.equals(null))
-            throw new ResourceNotFoundException("Tasls not found");
-        return ResponseEntity.ok(allTasks);
+    public @ResponseBody Object getAll(Authentication authentication) {
+
+        Iterable<Task> searchResult;
+
+        if (PrincipalRole.getFormatedRole(authentication).get("role") != "ADMIN") {
+            searchResult = taskRepository
+                    .findByUserId((int) PrincipalRole.getFormatedRole(authentication).get("user_id"));
+        } else {
+            searchResult = taskRepository.findAll();
+        }
+
+        if (searchResult.equals(null))
+            throw new ResourceNotFoundException("Tasks not found");
+
+        return ResponseEntity.ok(searchResult);
     }
 
     @RequestMapping(value = "/taskInProject/{projectId}", method = RequestMethod.GET)

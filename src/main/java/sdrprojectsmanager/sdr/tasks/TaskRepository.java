@@ -9,5 +9,4 @@ public interface TaskRepository extends CrudRepository<Task, Integer> {
     List<Task> findByProjectId(Integer id);
 
     List<Task> findByUserId(Integer userId);
-
 }

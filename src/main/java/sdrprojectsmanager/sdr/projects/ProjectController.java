@@ -1,14 +1,19 @@
 package sdrprojectsmanager.sdr.projects;
 
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import sdrprojectsmanager.sdr.budgets.Budget;
 import sdrprojectsmanager.sdr.budgets.BudgetsRepository;
 import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
 import sdrprojectsmanager.sdr.teams.Team;
+import sdrprojectsmanager.sdr.teams.TeamSquad;
 import sdrprojectsmanager.sdr.teams.TeamsRepository;
+import sdrprojectsmanager.sdr.teams.TeamsSquadRepository;
+import sdrprojectsmanager.sdr.utils.PrincipalRole;
 import sdrprojectsmanager.sdr.utils.ApiResponses.ApiResponse;
 
 import javax.validation.Valid;
@@ -26,6 +31,8 @@ public class ProjectController {
     private TeamsRepository teamsRepository;
     @Autowired
     private ProjectsRepository projectsRepository;
+    @Autowired
+    private TeamsSquadRepository teamSquadRepository;
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getById(@PathVariable Integer id) {
@@ -35,10 +42,23 @@ public class ProjectController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<?> getAll() {
-        Iterable<Project> searchResult = projectsRepository.findAll();
+    public ResponseEntity<?> getAll(Authentication authentication) {
+        Iterable<Project> searchResult;
+
+        if (PrincipalRole.getFormatedRole(authentication).get("role") != "ADMIN") {
+            Integer userId = (int) PrincipalRole.getFormatedRole(authentication).get("user_id");
+
+            TeamSquad teamSquad = (TeamSquad) teamSquadRepository.findByUserId(userId);
+            teamSquad.getTeamId();
+
+            searchResult = projectsRepository.findByUserId();
+        } else {
+            searchResult = projectsRepository.findAll();
+        }
+
         if (searchResult.equals(null))
-            throw new ResourceNotFoundException("Project not found");
+            throw new ResourceNotFoundException("Projects not found");
+
         return ResponseEntity.ok(searchResult);
     }
 
