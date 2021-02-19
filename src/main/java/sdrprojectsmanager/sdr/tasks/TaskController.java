@@ -52,7 +52,7 @@ public class TaskController {
         Project project = projectsRepository.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
-        Iterable<Task> searchResult = taskRepository.findByProjectIdAndId(project, projectId);
+        Iterable<Task> searchResult = taskRepository.findByProject(project);
         if (searchResult.equals(null))
             throw new ResourceNotFoundException("Tasks not found");
 
@@ -83,14 +83,11 @@ public class TaskController {
     @RequestMapping(method = RequestMethod.POST)
     public @ResponseBody Object add(@Valid @RequestBody AddTask newTask) {
         try {
-            em.createNamedStoredProcedureQuery("AddTask")
-                    .setParameter("task_name", newTask.getName())
+            em.createNamedStoredProcedureQuery("AddTask").setParameter("task_name", newTask.getName())
                     .setParameter("task_description", newTask.getDescription())
-                    .setParameter("user_id", newTask.getUserId())
-                    .setParameter("project_id", newTask.getProjectId())
+                    .setParameter("user_id", newTask.getUserId()).setParameter("project_id", newTask.getProjectId())
                     .setParameter("task_cost", newTask.getCost()).execute();
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             throw new ResourceNotFoundException(e.getCause().getMessage());
         }
         return ApiResponse.procedure("Task has been created successfuly");

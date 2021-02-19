@@ -17,9 +17,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Accessors(chain = true)
 @Entity(name = "raports")
-@NamedStoredProcedureQuery(name = "CreateRaport",
-        procedureName = "CreateRaport", parameters = {
-        @StoredProcedureParameter(mode = ParameterMode.IN, name = "project_id", type = Integer.class)})
+@NamedStoredProcedureQuery(name = "CreateRaport", procedureName = "CreateRaport", parameters = {
+        @StoredProcedureParameter(mode = ParameterMode.IN, name = "project_id", type = Integer.class) })
 
 public class Raport {
 
@@ -29,11 +28,11 @@ public class Raport {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "project_id", referencedColumnName = "id")
-    private Project projectId;
+    private Project project;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "team_id", referencedColumnName = "id")
-    private Team teamId;
+    private Team team;
 
     @Column(nullable = false)
     private String projectName;

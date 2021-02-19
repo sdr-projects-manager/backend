@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface TaskRepository extends CrudRepository<Task, Integer> {
 
-    List<Task> findByProjectIdAndId(Project projectId, Integer projectId1);
+    List<Task> findByProject(Project projectId);
 
     List<Task> findByUserId(User user);
 }
