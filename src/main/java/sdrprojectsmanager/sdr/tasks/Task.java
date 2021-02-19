@@ -23,7 +23,8 @@ import java.time.LocalDateTime;
         @StoredProcedureParameter(mode = ParameterMode.IN, name = "task_description", type = String.class),
         @StoredProcedureParameter(mode = ParameterMode.IN, name = "user_id", type = Integer.class),
         @StoredProcedureParameter(mode = ParameterMode.IN, name = "project_id", type = Integer.class),
-        @StoredProcedureParameter(mode = ParameterMode.IN, name = "task_cost", type = Double.class), })
+        @StoredProcedureParameter(mode = ParameterMode.IN, name = "task_cost", type = Double.class),
+        @StoredProcedureParameter(mode = ParameterMode.OUT, name = "new_task_id", type = Integer.class), })
 
 public class Task {
 

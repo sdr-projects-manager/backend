@@ -72,16 +72,23 @@ public class ProjectController {
 
     @RequestMapping(method = RequestMethod.POST)
     public @ResponseBody Object add(@Valid @RequestBody AddProject newProject) {
+        Integer projectId;
         try {
-            em.createNamedStoredProcedureQuery("CreateProject")
+            projectId = (Integer) em.createNamedStoredProcedureQuery("CreateProject")
                     .setParameter("proj_name", newProject.getName())
                     .setParameter("team_id", newProject.getTeamId())
-                    .setParameter("budget_limit", newProject.getLimitation()).execute();
+                    .setParameter("budget_limit", newProject.getLimitation()).getOutputParameterValue("new_proj_id");
         }
         catch(Exception e){
             throw new ResourceNotFoundException(e.getCause().getMessage());
         }
-        return ApiResponse.procedure("Project has been created successfuly");
+
+        Project project = projectsRepository.findById(projectId)
+                .orElseThrow(() -> new ResourceNotFoundException("Dane niepoprawne"));
+
+        String message = "Utworzono nowy projekt";
+
+        return ApiResponse.delete(project, message);
     }
 
     @RequestMapping(value = "endProject/{id}", method = RequestMethod.POST)

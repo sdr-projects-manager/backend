@@ -21,7 +21,9 @@ import java.time.LocalDateTime;
 @NamedStoredProcedureQuery(name = "CreateProject", procedureName = "CreateProject", parameters = {
                 @StoredProcedureParameter(mode = ParameterMode.IN, name = "proj_name", type = String.class),
                 @StoredProcedureParameter(mode = ParameterMode.IN, name = "team_id", type = Integer.class),
-                @StoredProcedureParameter(mode = ParameterMode.IN, name = "budget_limit", type = Double.class) })
+                @StoredProcedureParameter(mode = ParameterMode.IN, name = "budget_limit", type = Double.class),
+                @StoredProcedureParameter(mode = ParameterMode.OUT, name = "new_proj_id", type = Integer.class),})
+
 @NamedStoredProcedureQuery(name = "DeleteProject", procedureName = "DeleteProject", parameters = {
                 @StoredProcedureParameter(mode = ParameterMode.IN, name = "input_id", type = Integer.class) })
 

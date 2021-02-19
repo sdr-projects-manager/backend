@@ -82,15 +82,33 @@ public class TaskController {
     @Procedure(name = "AddTask")
     @RequestMapping(method = RequestMethod.POST)
     public @ResponseBody Object add(@Valid @RequestBody AddTask newTask) {
+        Integer taskId;
         try {
-            em.createNamedStoredProcedureQuery("AddTask").setParameter("task_name", newTask.getName())
+            taskId = (Integer) em.createNamedStoredProcedureQuery("AddTask")
+                    .setParameter("task_name", newTask.getName())
                     .setParameter("task_description", newTask.getDescription())
                     .setParameter("user_id", newTask.getUserId()).setParameter("project_id", newTask.getProjectId())
-                    .setParameter("task_cost", newTask.getCost()).execute();
+                    .setParameter("task_cost", newTask.getCost()).getOutputParameterValue("new_task_id");
         } catch (Exception e) {
             throw new ResourceNotFoundException(e.getCause().getMessage());
         }
-        return ApiResponse.procedure("Task has been created successfuly");
+        String message;
+
+        if(taskId < 0) {
+
+            if (taskId == -3) message = "Projekt jest zamknięty";
+            else if (taskId == -2) message = "Budżet został przekroczony";
+            else message = "Dane niepoprawne";
+
+            return ApiResponse.procedure(message);
+        }
+
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new ResourceNotFoundException("Dane niepoprawne"));
+
+        message = "Utworzono nowy zadanie";
+
+        return ApiResponse.delete(task, message);
     }
 
     @RequestMapping(value = "/endTask/{id}", method = RequestMethod.POST)
