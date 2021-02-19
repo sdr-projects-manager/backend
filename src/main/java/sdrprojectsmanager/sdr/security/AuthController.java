@@ -32,6 +32,6 @@ public class AuthController {
         UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
         // roles should be field here
         return ResponseEntity.ok(JwtResponse.builder().token(jwt).id(principal.getId()).login(principal.getUsername())
-                .email(principal.getEmail()).build());
+                .email(principal.getEmail()).role(principal.getRole()).build());
     }
 }

@@ -3,8 +3,10 @@ package sdrprojectsmanager.sdr.teams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
+import sdrprojectsmanager.sdr.utils.PrincipalRole;
 import sdrprojectsmanager.sdr.utils.ApiResponses.ApiResponse;
 
 import javax.persistence.EntityManager;
@@ -35,11 +37,20 @@ public class TeamController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<?> getAll() {
-        Iterable<Team> allTeams = teamsRepository.findAll();
-        if (allTeams.equals(null))
-            throw new ResourceNotFoundException("Teams not found");
-        return ResponseEntity.ok(allTeams);
+    public ResponseEntity<?> getAll(Authentication authentication) {
+        Iterable<Team> searchResult;
+
+        if (PrincipalRole.getFormatedRole(authentication).get("role") != "ADMIN") {
+            searchResult = teamsRepository
+                    .findByUserId((int) PrincipalRole.getFormatedRole(authentication).get("user_id"));
+        } else {
+            searchResult = teamsRepository.findAll();
+        }
+
+        if (searchResult.equals(null))
+            throw new ResourceNotFoundException("Tasks not found");
+
+        return ResponseEntity.ok(searchResult);
     }
 
     @RequestMapping(method = RequestMethod.POST)

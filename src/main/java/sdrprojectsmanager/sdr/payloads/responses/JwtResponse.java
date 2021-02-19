@@ -5,9 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,5 +15,5 @@ public class JwtResponse {
     private Integer id;
     private String login;
     private String email;
-    private List<String> roles = new ArrayList<>();
+    private String role;
 }

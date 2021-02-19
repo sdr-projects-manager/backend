@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Objects;
 
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -23,6 +22,8 @@ public class UserPrincipal implements UserDetails {
     private String username;
 
     private String email;
+
+    private String role;
 
     @JsonIgnore
     private String password;

@@ -1,12 +1,8 @@
 package sdrprojectsmanager.sdr.tasks;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.query.Procedure;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
 import sdrprojectsmanager.sdr.projects.Project;
@@ -17,7 +13,6 @@ import sdrprojectsmanager.sdr.utils.ApiResponses.ApiResponse;
 
 import javax.persistence.EntityManager;
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @ControllerAdvice()
@@ -94,11 +89,14 @@ public class TaskController {
         }
         String message;
 
-        if(taskId < 0) {
+        if (taskId < 0) {
 
-            if (taskId == -3) message = "Projekt jest zamknięty";
-            else if (taskId == -2) message = "Budżet został przekroczony";
-            else message = "Dane niepoprawne";
+            if (taskId == -3)
+                message = "Projekt jest zamknięty";
+            else if (taskId == -2)
+                message = "Budżet został przekroczony";
+            else
+                message = "Dane niepoprawne";
 
             return ApiResponse.procedure(message);
         }
