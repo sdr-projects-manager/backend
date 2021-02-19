@@ -6,7 +6,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import sdrprojectsmanager.sdr.roles.Role;
 import sdrprojectsmanager.sdr.users.User;
 
 import javax.persistence.*;
@@ -18,6 +17,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Accessors(chain = true)
 @Entity(name = "teamsSquad")
+@NamedStoredProcedureQuery(name = "AddUserToTeamSquad", procedureName = "AddUserToTeamSquad", parameters = {
+        @StoredProcedureParameter(mode = ParameterMode.IN, name = "user_id", type = Integer.class),
+        @StoredProcedureParameter(mode = ParameterMode.IN, name = "team_id", type = Integer.class), })
+
 public class TeamSquad {
 
     @Id

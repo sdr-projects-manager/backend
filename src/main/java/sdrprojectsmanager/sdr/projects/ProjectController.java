@@ -59,6 +59,8 @@ public class ProjectController {
 //        User searchResult = userRepository.findById(id)
 //                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));
 //
+//        TeamSquad searchResult = userRepository.findById(id)
+//                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));
 //
 //        Iterable<Project> searchResult = projectsRepository.findByUserIdAndId(searchResult,);
 //        if (searchResult.equals(null))

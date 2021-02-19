@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
 import sdrprojectsmanager.sdr.utils.ApiResponses.ApiResponse;
 
+import javax.persistence.EntityManager;
 import javax.validation.Valid;
 
 @RestController
@@ -18,6 +19,13 @@ public class TeamController {
 
     @Autowired
     private TeamsRepository teamsRepository;
+
+    @Autowired
+    private TeamsSquadRepository teamsSquadRepository;
+
+    @Autowired
+    private EntityManager em;
+
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getById(@PathVariable Integer id) {
@@ -47,6 +55,18 @@ public class TeamController {
         return ResponseEntity.ok(team);
     }
 
+    @RequestMapping(value = "/addToTeam", method = RequestMethod.POST)
+    public @ResponseBody Object addToTeam(@Valid @RequestBody AddToTeam newAdd) {
+
+        try {
+            em.createNamedStoredProcedureQuery("AddUserToTeamSquad")
+                    .setParameter("user_id", newAdd.getUserId())
+                    .setParameter("team_id", newAdd.getTeamId()).execute();
+        } catch (Exception e) {
+            throw new ResourceNotFoundException(e.getCause().getMessage());
+        }
+        return ApiResponse.procedure("User added to team successfuly");
+    }
 
     @RequestMapping(value = "/edit/{teamId}", method = RequestMethod.POST)
     public @ResponseBody Object edit(@PathVariable Integer teamId, @RequestBody Team editTeam) {

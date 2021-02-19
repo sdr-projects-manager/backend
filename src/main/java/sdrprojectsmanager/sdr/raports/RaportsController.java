@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
+import sdrprojectsmanager.sdr.projects.Project;
+import sdrprojectsmanager.sdr.projects.ProjectsRepository;
+
 import javax.validation.Valid;
 
 @RestController
@@ -16,6 +19,9 @@ public class RaportsController {
     @Autowired
     private RaportRepository raportRepository;
 
+    @Autowired
+    private ProjectsRepository projectsRepository;
+
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getById(@PathVariable Integer id) {
         Raport searchResult = raportRepository.findById(id)
@@ -24,11 +30,14 @@ public class RaportsController {
     }
 
     @RequestMapping(value = "project/{id}", method = RequestMethod.GET)
-    public ResponseEntity<?> getByProjectId(@PathVariable Integer projectid) {
-        Raport raport;
-        raport = raportRepository.findByProjectId(projectid);
+    public ResponseEntity<?> getByProjectId(@PathVariable Integer id) {
+
+        Project project = projectsRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
+
+        Raport raport = raportRepository.findByProjectId(project);
         if (raport == null) {
-            throw new ResourceNotFoundException("Raport not found with project id: " + projectid);
+            throw new ResourceNotFoundException("Raport not found with project id: " + id);
         }
         return ResponseEntity.ok(raport);
     }
