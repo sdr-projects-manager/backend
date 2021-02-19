@@ -43,19 +43,20 @@ public class SecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
-                .antMatchers("/api/auth/signin").permitAll().antMatchers("/api/budgets/changeLimit/**")
-                .hasAnyAuthority("ROLE_ADMIN", "ROLE_PM").antMatchers("/api/budgets/**")
-                .hasAnyAuthority("ROLE_ADMIN", "ROLE_PM").antMatchers("/api/projects/**")
-                .hasAnyAuthority("ROLE_ADMIN", "ROLE_PM").antMatchers("/api/task/**")
-                .hasAnyAuthority("ROLE_ADMIN", "ROLE_PM", "ROLE_TL", "ROLE_USER").antMatchers("/api/task/edit/**")
-                .hasAnyAuthority("ROLE_ADMIN", "ROLE_PM", "ROLE_TL").antMatchers("/api/task/endTask")
-                .hasAnyAuthority("ROLE_ADMIN", "ROLE_PM", "ROLE_TL", "ROLE_USER")
+                .antMatchers("/api/auth/signin").permitAll()
+                .antMatchers("/api/budgets/changeLimit/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_PM")
+                .antMatchers("/api/budgets/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_PM")
+                .antMatchers("/api/projects/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_PM")
+                .antMatchers("/api/task/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_PM", "ROLE_TL", "ROLE_USER")
+                .antMatchers("/api/task/edit/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_PM", "ROLE_TL")
+                .antMatchers("/api/task/endTask").hasAnyAuthority("ROLE_ADMIN", "ROLE_PM", "ROLE_TL", "ROLE_USER")
                 .antMatchers("/api/task/taskInProject/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_PM", "ROLE_TL")
                 .antMatchers("/api/task/userTask/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_PM", "ROLE_TL", "ROLE_USER")
                 .antMatchers("/api/teams/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_PM", "ROLE_TL")
-                .antMatchers("/api/users/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_PM").antMatchers("/api/users/edit/**")
-                .hasAnyAuthority("ROLE_ADMIN", "ROLE_PM", "ROLE_TL", "ROLE_USER").antMatchers("/api/raports/**")
-                .hasAnyAuthority("ROLE_ADMIN", "ROLE_PM", "ROLE_TL").anyRequest().authenticated();
+                .antMatchers("/api/users/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_PM")
+                .antMatchers("/api/users/edit/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_PM", "ROLE_TL", "ROLE_USER")
+                .antMatchers("/api/raports/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_PM", "ROLE_TL")
+                .anyRequest().authenticated();
 
         http.addFilterAfter(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }

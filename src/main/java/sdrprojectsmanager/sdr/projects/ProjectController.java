@@ -10,10 +10,13 @@ import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
 import sdrprojectsmanager.sdr.raports.Raport;
 import sdrprojectsmanager.sdr.teams.Team;
 import sdrprojectsmanager.sdr.teams.TeamsRepository;
+import sdrprojectsmanager.sdr.users.User;
+import sdrprojectsmanager.sdr.users.UsersRepository;
 import sdrprojectsmanager.sdr.utils.ApiResponses.ApiResponse;
 
 import javax.persistence.EntityManager;
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @ControllerAdvice()
@@ -28,6 +31,10 @@ public class ProjectController {
     private TeamsRepository teamsRepository;
     @Autowired
     private ProjectsRepository projectsRepository;
+
+    @Autowired
+    private UsersRepository userRepository;
+
     @Autowired
     private EntityManager em;
 
@@ -46,8 +53,23 @@ public class ProjectController {
         return ResponseEntity.ok(searchResult);
     }
 
+//    @RequestMapping(value = "byUser/{id}", method = RequestMethod.GET)
+//    public ResponseEntity<?> getAllByUser(@PathVariable Integer id) {
+//
+//        User searchResult = userRepository.findById(id)
+//                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));
+//
+//
+//        Iterable<Project> searchResult = projectsRepository.findByUserIdAndId(searchResult,);
+//        if (searchResult.equals(null))
+//            throw new ResourceNotFoundException("Project not found");
+//
+//        return ResponseEntity.ok(searchResult);
+//    }
+
+
     @RequestMapping(method = RequestMethod.POST)
-    public @ResponseBody Object add(@Valid @RequestBody Project newProject) {
+    public @ResponseBody Object add(@Valid @RequestBody AddProject newProject) {
         try {
             em.createNamedStoredProcedureQuery("CreateProject")
                     .setParameter("proj_name", newProject.getName())

@@ -6,6 +6,8 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import sdrprojectsmanager.sdr.projects.Project;
+import sdrprojectsmanager.sdr.users.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -27,16 +29,16 @@ import java.time.LocalDateTime;
 public class Task {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false)
-    @NotNull(message = "Please provide a project id")
-    private Integer projectId;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "project_id", referencedColumnName = "id")
+    private Project projectId;
 
-    @Column(nullable = false)
-    @NotNull(message = "Please provide a user id")
-    private Integer userId;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User userId;
 
     @Column(nullable = false)
     @NotNull(message = "Please provide a name")

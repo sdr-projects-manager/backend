@@ -6,15 +6,16 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
+import sdrprojectsmanager.sdr.projects.Project;
+import sdrprojectsmanager.sdr.projects.ProjectsRepository;
+import sdrprojectsmanager.sdr.users.User;
+import sdrprojectsmanager.sdr.users.UsersRepository;
 import sdrprojectsmanager.sdr.utils.ApiResponses.ApiResponse;
 
-import javax.management.Query;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.ParameterMode;
-import javax.persistence.StoredProcedureQuery;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -29,24 +30,46 @@ public class TaskController {
     private TaskRepository taskRepository;
 
     @Autowired
+    private ProjectsRepository projectsRepository;
+
+    @Autowired
+    private UsersRepository userRepository;
+
+    @Autowired
     private EntityManager em;
 
     @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody Object getAll() {
         Iterable<Task> allTasks = taskRepository.findAll();
         if (allTasks.equals(null))
-            throw new ResourceNotFoundException("Tasls not found");
+            throw new ResourceNotFoundException("Tasks not found");
         return ResponseEntity.ok(allTasks);
     }
 
     @RequestMapping(value = "/taskInProject/{projectId}", method = RequestMethod.GET)
-    public List<Task> getTaskInProject(@PathVariable Integer projectId) {
-        return taskRepository.findByProjectId(projectId);
+    public ResponseEntity<?> getTaskInProject(@PathVariable Integer projectId) {
+
+        Project project = projectsRepository.findById(projectId)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
+
+        Iterable<Task> searchResult = taskRepository.findByProjectIdAndId(project, projectId);
+        if (searchResult.equals(null))
+            throw new ResourceNotFoundException("Tasks not found");
+
+        return ResponseEntity.ok(searchResult);
     }
 
     @RequestMapping(value = "/userTask/{userId}", method = RequestMethod.GET)
-    public List<Task> getUserTask(@PathVariable Integer userId) {
-        return taskRepository.findByUserId(userId);
+    public ResponseEntity<?> getUserTask(@PathVariable Integer userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Task for user not found with id: " + userId));
+
+        Iterable<Task> searchResult = taskRepository.findByUserId(user);
+        if (searchResult.equals(null))
+            throw new ResourceNotFoundException("Tasks not found");
+
+        return ResponseEntity.ok(searchResult);
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
@@ -58,7 +81,7 @@ public class TaskController {
 
     @Procedure(name = "AddTask")
     @RequestMapping(method = RequestMethod.POST)
-    public @ResponseBody Object add(@Valid @RequestBody Task newTask) {
+    public @ResponseBody Object add(@Valid @RequestBody AddTask newTask) {
         try {
             em.createNamedStoredProcedureQuery("AddTask")
                     .setParameter("task_name", newTask.getName())

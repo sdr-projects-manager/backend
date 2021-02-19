@@ -30,11 +30,6 @@ public class TeamSquad {
     private Team teamId;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "role_id", referencedColumnName = "id")
-    @NotNull(message = "Please provide a roleid")
-    private Role roleId;
-
-    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "users", referencedColumnName = "id")
     @NotNull(message = "Please provide a userid")
     private User userId;
