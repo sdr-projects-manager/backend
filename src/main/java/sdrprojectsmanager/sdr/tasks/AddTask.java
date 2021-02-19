@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Column;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -24,7 +25,6 @@ public class AddTask {
     private String name;
 
     @Column(nullable = false)
-    @NotNull(message = "Please provide a description")
     private String description;
 
 
