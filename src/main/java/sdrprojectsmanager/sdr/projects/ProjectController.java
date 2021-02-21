@@ -53,8 +53,7 @@ public class ProjectController {
         Integer projectId;
         try {
             projectId = (Integer) em.createNamedStoredProcedureQuery("CreateProject")
-                    .setParameter("proj_name", newProject.getName())
-                    .setParameter("team_id", newProject.getTeamId())
+                    .setParameter("proj_name", newProject.getName()).setParameter("team_id", newProject.getTeamId())
                     .setParameter("budget_limit", newProject.getLimitation()).getOutputParameterValue("new_proj_id");
         } catch (Exception e) {
             throw new ResourceNotFoundException(e.getCause().getMessage());
@@ -66,6 +65,24 @@ public class ProjectController {
         String message = "Utworzono nowy projekt";
 
         return ApiResponse.delete(project, message);
+    }
+
+    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
+    public @ResponseBody Object edit(@PathVariable Integer id, @Valid @RequestBody AddProject editProject) {
+        Project searchResult = projectsRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));
+
+        if (!editProject.getName().isEmpty()) {
+            searchResult.setName(editProject.getName());
+        }
+
+        if (editProject.getState() >= 0) {
+            searchResult.setState(editProject.getState());
+        }
+
+        projectsRepository.save(searchResult);
+
+        return ApiResponse.delete(searchResult, "Project has been edited");
     }
 
     @RequestMapping(value = "endProject/{id}", method = RequestMethod.POST)
@@ -90,11 +107,12 @@ public class ProjectController {
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
         Integer result;
         try {
-            result = (Integer) em.createNamedStoredProcedureQuery("DeleteProject").setParameter("input_id", id).getOutputParameterValue("current_state");
+            result = (Integer) em.createNamedStoredProcedureQuery("DeleteProject").setParameter("input_id", id)
+                    .getOutputParameterValue("current_state");
         } catch (Exception e) {
             throw new ResourceNotFoundException(e.getCause().getMessage());
         }
-        if(result < 0){
+        if (result < 0) {
             String message;
             message = "Cannot delete a closed project";
             return ApiResponse.procedure(message);

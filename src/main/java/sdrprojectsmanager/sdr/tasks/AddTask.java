@@ -11,7 +11,6 @@ import javax.validation.constraints.NotNull;
 @Setter
 public class AddTask {
 
-
     @Column(nullable = false)
     @NotNull(message = "Please provide a project id")
     private Integer projectId;
@@ -26,7 +25,6 @@ public class AddTask {
 
     @Column(nullable = false)
     private String description;
-
 
     @Column(nullable = false)
     @NotNull(message = "Please provide a cost")
