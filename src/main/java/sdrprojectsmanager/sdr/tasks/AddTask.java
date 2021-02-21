@@ -25,4 +25,8 @@ public class AddTask {
     @Column(nullable = false)
     @NotNull(message = "Please provide a cost")
     private Double cost;
+
+    @Column(nullable = false)
+    @NotNull(message = "Please provide a state")
+    private Integer state;
 }

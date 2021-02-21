@@ -138,6 +138,10 @@ public class TaskController {
             searchResult.setCost(editTask.getCost());
         }
 
+        if (editTask.getState() == 0 || editTask.getState() == 1) {
+            searchResult.setState(editTask.getState());
+        }
+
         taskRepository.save(searchResult);
 
         return ResponseEntity.ok(searchResult);
