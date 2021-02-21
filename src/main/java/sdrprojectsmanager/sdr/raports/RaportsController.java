@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
 import sdrprojectsmanager.sdr.projects.Project;
 import sdrprojectsmanager.sdr.projects.ProjectsRepository;
+import sdrprojectsmanager.sdr.tasks.TaskRepository;
 
 import javax.validation.Valid;
 
@@ -18,6 +19,9 @@ public class RaportsController {
 
     @Autowired
     private RaportRepository raportRepository;
+
+    @Autowired
+    private TaskRepository taskRepository;
 
     @Autowired
     private ProjectsRepository projectsRepository;
@@ -48,5 +52,13 @@ public class RaportsController {
         if (raport.equals(null))
             throw new ResourceNotFoundException("Raports not found");
         return ResponseEntity.ok(raport);
+    }
+
+    @RequestMapping(value = "tasks/{id}", method = RequestMethod.GET)
+    public @ResponseBody Object getTasksById(@PathVariable Integer id) {
+        raportRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Raport not found with id: " + id));
+
+        return ResponseEntity.ok(taskRepository.findByRaportId(id));
     }
 }
