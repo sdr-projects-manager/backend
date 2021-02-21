@@ -3,12 +3,14 @@ package sdrprojectsmanager.sdr.tasks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
 import sdrprojectsmanager.sdr.projects.Project;
 import sdrprojectsmanager.sdr.projects.ProjectsRepository;
 import sdrprojectsmanager.sdr.users.User;
 import sdrprojectsmanager.sdr.users.UsersRepository;
+import sdrprojectsmanager.sdr.utils.PrincipalRole;
 import sdrprojectsmanager.sdr.utils.ApiResponses.ApiResponse;
 
 import javax.persistence.EntityManager;
@@ -76,27 +78,30 @@ public class TaskController {
 
     @Procedure(name = "AddTask")
     @RequestMapping(method = RequestMethod.POST)
-    public @ResponseBody Object add(@Valid @RequestBody AddTask newTask) {
+    public @ResponseBody Object add(@Valid @RequestBody AddTask newTask, Authentication authentication) {
         Integer taskId;
+
         try {
             taskId = (Integer) em.createNamedStoredProcedureQuery("AddTask")
                     .setParameter("task_name", newTask.getName())
                     .setParameter("task_description", newTask.getDescription())
-                    .setParameter("user_id", newTask.getUserId()).setParameter("project_id", newTask.getProjectId())
+                    .setParameter("user_id", (int) PrincipalRole.getFormatedRole(authentication).get("user_id"))
+                    .setParameter("project_id", (int) newTask.getProjectId())
                     .setParameter("task_cost", newTask.getCost()).getOutputParameterValue("new_task_id");
         } catch (Exception e) {
             throw new ResourceNotFoundException(e.getCause().getMessage());
         }
+
         String message;
 
         if (taskId < 0) {
 
             if (taskId == -3)
-                message = "Projekt jest zamknięty";
+                message = "Project has been closed";
             else if (taskId == -2)
-                message = "Budżet został przekroczony";
+                message = "Budget has been exceeded";
             else
-                message = "Dane niepoprawne";
+                message = "Data is incorrenct";
 
             return ApiResponse.procedure(message);
         }
@@ -104,9 +109,7 @@ public class TaskController {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new ResourceNotFoundException("Dane niepoprawne"));
 
-        message = "Utworzono nowy zadanie";
-
-        return ApiResponse.delete(task, message);
+        return ApiResponse.delete(task, "Task has been created");
     }
 
     @RequestMapping(value = "/endTask/{id}", method = RequestMethod.POST)
