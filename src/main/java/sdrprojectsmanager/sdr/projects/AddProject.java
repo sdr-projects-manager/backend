@@ -21,4 +21,8 @@ public class AddProject {
     @NotNull(message = "Please provide a name")
     @Column(nullable = false)
     private String name;
+
+    @NotNull(message = "Please provide a state")
+    @Column(nullable = false)
+    private Integer state;
 }

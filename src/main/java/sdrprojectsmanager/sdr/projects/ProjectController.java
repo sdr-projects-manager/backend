@@ -1,5 +1,6 @@
 package sdrprojectsmanager.sdr.projects;
 
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,7 @@ public class ProjectController {
     @Autowired
     private ProjectsRepository projectsRepository;
 
+    @Autowired
     private EntityManager em;
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
@@ -65,6 +67,24 @@ public class ProjectController {
         return ApiResponse.delete(project, message);
     }
 
+    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
+    public @ResponseBody Object edit(@PathVariable Integer id, @Valid @RequestBody AddProject editProject) {
+        Project searchResult = projectsRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));
+
+        if (!editProject.getName().isEmpty()) {
+            searchResult.setName(editProject.getName());
+        }
+
+        if (editProject.getState() >= 0) {
+            searchResult.setState(editProject.getState());
+        }
+
+        projectsRepository.save(searchResult);
+
+        return ApiResponse.delete(searchResult, "Project has been edited");
+    }
+
     @RequestMapping(value = "endProject/{id}", method = RequestMethod.POST)
     public ResponseEntity<?> endProject(@PathVariable Integer id) {
         Project project = projectsRepository.findById(id)
@@ -85,10 +105,17 @@ public class ProjectController {
     public ResponseEntity<?> delete(@PathVariable Integer id) {
         Project project = projectsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
+        Integer result;
         try {
-            em.createNamedStoredProcedureQuery("DeleteProject").setParameter("input_id", id).execute();
+            result = (Integer) em.createNamedStoredProcedureQuery("DeleteProject").setParameter("input_id", id)
+                    .getOutputParameterValue("current_state");
         } catch (Exception e) {
             throw new ResourceNotFoundException(e.getCause().getMessage());
+        }
+        if (result < 0) {
+            String message;
+            message = "Cannot delete a closed project";
+            return ApiResponse.procedure(message);
         }
 
         return ApiResponse.delete(project, "Project has been deleted");
