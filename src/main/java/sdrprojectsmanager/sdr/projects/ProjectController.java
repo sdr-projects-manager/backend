@@ -1,6 +1,5 @@
 package sdrprojectsmanager.sdr.projects;
 
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
@@ -10,12 +9,9 @@ import sdrprojectsmanager.sdr.budgets.Budget;
 import sdrprojectsmanager.sdr.budgets.BudgetsRepository;
 import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
 import sdrprojectsmanager.sdr.teams.Team;
-import sdrprojectsmanager.sdr.teams.TeamSquad;
 import sdrprojectsmanager.sdr.teams.TeamsRepository;
-import sdrprojectsmanager.sdr.teams.TeamsSquadRepository;
 import sdrprojectsmanager.sdr.utils.PrincipalRole;
 import sdrprojectsmanager.sdr.utils.ApiResponses.ApiResponse;
-
 import javax.validation.Valid;
 
 @RestController
@@ -31,8 +27,6 @@ public class ProjectController {
     private TeamsRepository teamsRepository;
     @Autowired
     private ProjectsRepository projectsRepository;
-    @Autowired
-    private TeamsSquadRepository teamSquadRepository;
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getById(@PathVariable Integer id) {
@@ -45,13 +39,9 @@ public class ProjectController {
     public ResponseEntity<?> getAll(Authentication authentication) {
         Iterable<Project> searchResult;
 
-        if (PrincipalRole.getFormatedRole(authentication).get("role") != "ADMIN") {
-            Integer userId = (int) PrincipalRole.getFormatedRole(authentication).get("user_id");
-
-            TeamSquad teamSquad = (TeamSquad) teamSquadRepository.findByUserId(userId);
-            teamSquad.getTeamId();
-
-            searchResult = projectsRepository.findByUserId();
+        if (!"ADMIN".equals(PrincipalRole.getFormatedRole(authentication).get("role"))) {
+            Integer id = (int) PrincipalRole.getFormatedRole(authentication).get("user_id");
+            searchResult = projectsRepository.findByUser(id);
         } else {
             searchResult = projectsRepository.findAll();
         }
@@ -66,15 +56,16 @@ public class ProjectController {
     public @ResponseBody Object add(@Valid @RequestBody AddProject newProject) {
 
         Budget newBudget = new Budget();
-        Team searchResult = teamsRepository.findById(newProject.getTeamId())
+        Team team = teamsRepository.findById(newProject.getTeamId())
                 .orElseThrow(() -> new ResourceNotFoundException("Team not found with id: " + newProject.getTeamId()));
+
         Project project = new Project();
         try {
             newBudget.setLimitation(newProject.getLimitation());
             newBudget.setCost(0.00);
             budgetsRepository.save(newBudget);
             project.setName(newProject.getName());
-            project.setTeamId(searchResult.getId());
+            project.setTeam(team);
             project.setBudget(newBudget);
             project.setState(0);
             projectsRepository.save(project);

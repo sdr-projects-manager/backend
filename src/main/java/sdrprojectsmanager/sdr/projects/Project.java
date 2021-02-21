@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import sdrprojectsmanager.sdr.budgets.Budget;
+import sdrprojectsmanager.sdr.teams.Team;
 
 import java.time.LocalDateTime;
 
@@ -22,10 +23,12 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @Column(nullable = true)
     @NotNull(message = "Please provide a team id")
-    private Integer teamId;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "team_id", referencedColumnName = "id")
+    private Team team;
 
+    @NotNull(message = "Please provide a budget id")
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "budget", referencedColumnName = "id")
     private Budget budget;
@@ -43,5 +46,4 @@ public class Project {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-
 }
