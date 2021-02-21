@@ -1,26 +1,14 @@
 package sdrprojectsmanager.sdr.projects;
 
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import sdrprojectsmanager.sdr.budgets.Budget;
-import sdrprojectsmanager.sdr.budgets.BudgetsRepository;
 import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
-import sdrprojectsmanager.sdr.raports.Raport;
-import sdrprojectsmanager.sdr.teams.Team;
-import sdrprojectsmanager.sdr.teams.TeamSquad;
-import sdrprojectsmanager.sdr.teams.TeamsRepository;
-import sdrprojectsmanager.sdr.teams.TeamsSquadRepository;
-import sdrprojectsmanager.sdr.users.UsersRepository;
 import sdrprojectsmanager.sdr.utils.PrincipalRole;
 import sdrprojectsmanager.sdr.utils.ApiResponses.ApiResponse;
-
 import javax.persistence.EntityManager;
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @ControllerAdvice()
@@ -30,17 +18,8 @@ import java.util.List;
 public class ProjectController {
 
     @Autowired
-    private BudgetsRepository budgetsRepository;
-    @Autowired
-    private TeamsRepository teamsRepository;
-    @Autowired
     private ProjectsRepository projectsRepository;
-    @Autowired
-    private TeamsSquadRepository teamSquadRepository;
-    @Autowired
-    private UsersRepository userRepository;
 
-    @Autowired
     private EntityManager em;
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
@@ -54,38 +33,18 @@ public class ProjectController {
     public ResponseEntity<?> getAll(Authentication authentication) {
         Iterable<Project> searchResult;
 
-        // if (PrincipalRole.getFormatedRole(authentication).get("role") != "ADMIN") {
-        // Integer userId = (int)
-        // PrincipalRole.getFormatedRole(authentication).get("user_id");
-        // } else {
-        // }
-
-        searchResult = projectsRepository.findAll();
+        if (!"ADMIN".equals(PrincipalRole.getFormatedRole(authentication).get("role"))) {
+            Integer id = (int) PrincipalRole.getFormatedRole(authentication).get("user_id");
+            searchResult = projectsRepository.findByUser(id);
+        } else {
+            searchResult = projectsRepository.findAll();
+        }
 
         if (searchResult.equals(null))
             throw new ResourceNotFoundException("Projects not found");
 
         return ResponseEntity.ok(searchResult);
     }
-
-    // @RequestMapping(value = "byUser/{id}", method = RequestMethod.GET)
-    // public ResponseEntity<?> getAllByUser(@PathVariable Integer id) {
-    //
-    // User searchResult = userRepository.findById(id)
-    // .orElseThrow(() -> new ResourceNotFoundException("Project not found with id:
-    // " + id));
-    //
-    // TeamSquad searchResult = userRepository.findById(id)
-    // .orElseThrow(() -> new ResourceNotFoundException("Project not found with id:
-    // " + id));
-    //
-    // Iterable<Project> searchResult =
-    // projectsRepository.findByUserIdAndId(searchResult,);
-    // if (searchResult.equals(null))
-    // throw new ResourceNotFoundException("Project not found");
-    //
-    // return ResponseEntity.ok(searchResult);
-    // }
 
     @RequestMapping(method = RequestMethod.POST)
     public @ResponseBody Object add(@Valid @RequestBody AddProject newProject) {

@@ -29,7 +29,6 @@ public class SdrUserDetailsService implements UserDetailsService {
 
         Collection<GrantedAuthority> authorities = new ArrayList<>();
         var role = user.getRole();
-        System.out.println(role.getId());
 
         if (role.getId() == 1) {
             authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
@@ -45,7 +44,6 @@ public class SdrUserDetailsService implements UserDetailsService {
         }
 
         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-        System.out.println(authorities);
         return UserPrincipal.builder().id(user.getId()).username(user.getLogin()).email(user.getEmail())
                 .password(user.getPassword()).role(user.getRole().getName()).authorities(authorities).build();
     }

@@ -8,7 +8,6 @@ import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
 import javax.validation.Valid;
 import java.util.Optional;
 
-
 @RestController
 @ControllerAdvice()
 @Valid
@@ -25,8 +24,7 @@ public class BudgetController {
             budget.setLimitation(newLimit);
             budget.setCost(0.00);
             budgetsRepository.save(budget);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             throw new ResourceNotFoundException("Create team fails");
         }
         return budget;
@@ -37,7 +35,7 @@ public class BudgetController {
         Optional<Budget> searchResult = budgetsRepository.findById(id);
         if (searchResult.isEmpty()) {
             return ResponseEntity.ok("Nie znaleziono");
-            //TODO ResponseExceptionController
+            // TODO ResponseExceptionController
         }
         return ResponseEntity.ok(searchResult);
     }
@@ -47,10 +45,8 @@ public class BudgetController {
         Budget budgetEdit = budgetsRepository.findById(budgetId).orElse(null);
         if (budgetEdit == null) {
             return ResponseEntity.ok("Nie znaleziono");
-            //TODO ResponseExceptionController
+            // TODO ResponseExceptionController
         }
-        System.out.println(editLimit);
-        System.out.println(editLimit.getLimitation());
         budgetEdit.setLimitation(editLimit.getLimitation());
         budgetsRepository.save(budgetEdit);
 

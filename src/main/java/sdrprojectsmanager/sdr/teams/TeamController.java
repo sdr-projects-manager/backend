@@ -40,7 +40,8 @@ public class TeamController {
     public ResponseEntity<?> getAll(Authentication authentication) {
         Iterable<Team> searchResult;
 
-        if (PrincipalRole.getFormatedRole(authentication).get("role") != "ADMIN") {
+        // TODO: Add native query
+        if (!"ADMIN".equals(PrincipalRole.getFormatedRole(authentication).get("role"))) {
             searchResult = teamsRepository
                     .findByUserId((int) PrincipalRole.getFormatedRole(authentication).get("user_id"));
         } else {
