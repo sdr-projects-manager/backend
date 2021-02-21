@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
-import sdrprojectsmanager.sdr.security.UserPrincipal;
 import sdrprojectsmanager.sdr.utils.PrincipalRole;
 import sdrprojectsmanager.sdr.utils.ApiResponses.ApiResponse;
 import javax.validation.Valid;
@@ -27,7 +26,7 @@ public class TaskController {
 
         Iterable<Task> searchResult;
 
-        if (PrincipalRole.getFormatedRole(authentication).get("role") != "ADMIN") {
+        if (!"ADMIN".equals(PrincipalRole.getFormatedRole(authentication).get("role"))) {
             searchResult = taskRepository
                     .findByUserId((int) PrincipalRole.getFormatedRole(authentication).get("user_id"));
         } else {
