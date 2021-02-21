@@ -78,6 +78,16 @@ public class ProjectController {
 
         if (editProject.getState() >= 0) {
             searchResult.setState(editProject.getState());
+
+            if (editProject.getState() == 1) {
+                try {
+                    em.createNamedStoredProcedureQuery("CreateRaport").setParameter("project_id", id).execute();
+                } catch (Exception e) {
+                    throw new ResourceNotFoundException(e.getCause().getMessage());
+                }
+
+                ApiResponse.procedure("Project raport has been created");
+            }
         }
 
         projectsRepository.save(searchResult);
