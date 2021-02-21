@@ -28,7 +28,6 @@ public class TeamController {
     @Autowired
     private EntityManager em;
 
-
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getById(@PathVariable Integer id) {
         Team searchResult = teamsRepository.findById(id)
@@ -40,10 +39,9 @@ public class TeamController {
     public ResponseEntity<?> getAll(Authentication authentication) {
         Iterable<Team> searchResult;
 
-        // TODO: Add native query
         if (!"ADMIN".equals(PrincipalRole.getFormatedRole(authentication).get("role"))) {
             searchResult = teamsRepository
-                    .findByUserId((int) PrincipalRole.getFormatedRole(authentication).get("user_id"));
+                    .findByUser((int) PrincipalRole.getFormatedRole(authentication).get("user_id"));
         } else {
             searchResult = teamsRepository.findAll();
         }
@@ -71,8 +69,7 @@ public class TeamController {
     public @ResponseBody Object addToTeam(@Valid @RequestBody AddToTeam newAdd) {
 
         try {
-            em.createNamedStoredProcedureQuery("AddUserToTeamSquad")
-                    .setParameter("user_id", newAdd.getUserId())
+            em.createNamedStoredProcedureQuery("AddUserToTeamSquad").setParameter("user_id", newAdd.getUserId())
                     .setParameter("team_id", newAdd.getTeamId()).execute();
         } catch (Exception e) {
             throw new ResourceNotFoundException(e.getCause().getMessage());
