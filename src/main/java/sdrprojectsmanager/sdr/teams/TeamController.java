@@ -6,8 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import sdrprojectsmanager.sdr.exception.ResourceNotFoundException;
+import sdrprojectsmanager.sdr.users.User;
+import sdrprojectsmanager.sdr.users.UsersRepository;
 import sdrprojectsmanager.sdr.utils.PrincipalRole;
 import sdrprojectsmanager.sdr.utils.ApiResponses.ApiResponse;
+
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.validation.Valid;
@@ -23,7 +27,7 @@ public class TeamController {
     private TeamsRepository teamsRepository;
 
     @Autowired
-    private TeamsSquadRepository teamsSquadRepository;
+    private UsersRepository userRepository;
 
     @Autowired
     private EntityManager em;
@@ -113,5 +117,18 @@ public class TeamController {
         teamsRepository.deleteById(id);
 
         return ApiResponse.delete(team, "Team has been deleted");
+    }
+
+    @RequestMapping(value = "/members/{id}", method = RequestMethod.GET)
+    public ResponseEntity<?> findTeamMembers(@PathVariable Integer id) {
+        List<User> users = userRepository.findTeamMembers(id);
+
+        String message = "";
+
+        if (users.size() == 0) {
+            message = "There are no members in this team";
+        }
+
+        return ApiResponse.delete(users, message);
     }
 }
