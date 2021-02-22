@@ -26,6 +26,10 @@ import java.time.LocalDateTime;
         @StoredProcedureParameter(mode = ParameterMode.IN, name = "task_cost", type = Double.class),
         @StoredProcedureParameter(mode = ParameterMode.OUT, name = "new_task_id", type = Integer.class), })
 
+@NamedStoredProcedureQuery(name = "EditTaskCost", procedureName = "EditTaskCost", parameters = {
+        @StoredProcedureParameter(mode = ParameterMode.IN, name = "task_id", type = Integer.class),
+        @StoredProcedureParameter(mode = ParameterMode.IN, name = "task_cost", type = Double.class), })
+
 public class Task {
 
     @Id

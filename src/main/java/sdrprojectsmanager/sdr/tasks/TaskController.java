@@ -135,12 +135,15 @@ public class TaskController {
         }
 
         if (editTask.getCost() > 0) {
-            searchResult.setCost(editTask.getCost());
+            try {
+                em.createNamedStoredProcedureQuery("EditTaskCost")
+                        .setParameter("task_id", id)
+                        .setParameter("task_cost", editTask.getCost()).execute();
+            } catch (Exception e) {
+                throw new ResourceNotFoundException(e.getCause().getMessage());
+            }
         }
-
-        if (editTask.getState() == 0 || editTask.getState() == 1) {
-            searchResult.setState(editTask.getState());
-        }
+        searchResult.setState(editTask.getState());
 
         taskRepository.save(searchResult);
 
