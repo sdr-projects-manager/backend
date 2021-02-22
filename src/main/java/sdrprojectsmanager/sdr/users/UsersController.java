@@ -51,14 +51,14 @@ public class UsersController {
             user.setName(newUser.getName());
             user.setEmail(newUser.getEmail());
             user.setLastName(newUser.getLastName());
-            var role = rolesRepository.findById(newUser.getRole_id());
+            var role = rolesRepository.findById(newUser.getRole());
             if (role != null) {
                 user.setRole(role.get());
             }
             user.setPassword(encoder.encode(newUser.getPassword()));
             userRepository.save(user);
         } catch (Exception e) {
-            throw new ResourceNotFoundException("Role not found");
+            throw new ResourceNotFoundException(e.getMessage());
         }
 
         return ResponseEntity.ok(user);
@@ -73,7 +73,7 @@ public class UsersController {
             edit.setName(newEdit.getName());
             edit.setEmail(newEdit.getEmail());
             edit.setLastName(newEdit.getLastName());
-            var role = rolesRepository.findById(newEdit.getRole_id());
+            var role = rolesRepository.findById(newEdit.getRole());
             if (role != null)
                 edit.setRole(role.get());
             edit.setPassword(encoder.encode(newEdit.getPassword()));
