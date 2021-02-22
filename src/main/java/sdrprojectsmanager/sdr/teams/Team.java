@@ -35,5 +35,4 @@ public class Team {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-
 }

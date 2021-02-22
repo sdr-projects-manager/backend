@@ -62,7 +62,7 @@ public class TeamController {
         } catch (Exception e) {
             throw new ResourceNotFoundException("Create team fails");
         }
-        return ResponseEntity.ok(team);
+        return ApiResponse.delete(team, "");
     }
 
     @RequestMapping(value = "/addToTeam", method = RequestMethod.POST)
@@ -77,18 +77,34 @@ public class TeamController {
         return ApiResponse.procedure("User added to team successfuly");
     }
 
-    @RequestMapping(value = "/edit/{teamId}", method = RequestMethod.POST)
-    public @ResponseBody Object edit(@PathVariable Integer teamId, @RequestBody Team editTeam) {
-        Team teamEdit = teamsRepository.findById(teamId)
-                .orElseThrow(() -> new ResourceNotFoundException("Team not found with id: " + teamId));
-        try {
-            teamEdit.setName(editTeam.getName());
-            teamEdit.setMaxPeople(editTeam.getMaxPeople());
-            teamsRepository.save(teamEdit);
-        } catch (DataAccessException e) {
-            throw new ResourceNotFoundException(e.getCause().getMessage());
+    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
+    public @ResponseBody Object edit(@PathVariable Integer id, @RequestBody @Valid AddTeam editTeam) {
+        Team searchResult = teamsRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Team not found with id: " + id));
+
+        if (!editTeam.getName().isEmpty()) {
+            searchResult.setName(editTeam.getName());
         }
-        return ResponseEntity.ok(teamEdit);
+
+        if (editTeam.getMaxPeople() >= 0) {
+            searchResult.setMaxPeople(editTeam.getMaxPeople());
+        }
+
+        if (editTeam.getUsers().size() >= 0) {
+
+            editTeam.getUsers().forEach(userId -> {
+                try {
+                    em.createNamedStoredProcedureQuery("AddUserToTeamSquad").setParameter("user_id", userId)
+                            .setParameter("team_id", id).execute();
+                } catch (Exception e) {
+                    throw new ResourceNotFoundException(e.getCause().getMessage());
+                }
+            });
+        }
+
+        teamsRepository.save(searchResult);
+
+        return ResponseEntity.ok(searchResult);
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
